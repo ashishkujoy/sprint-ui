@@ -5,7 +5,7 @@ const Sprint = require('@ashishkuoy/sprint');
 const placeholderCode = '0 45 100\n0 55 101\n1 100 101 102\n9';
 const readInputInstCode = 6;
 
-const hideError = (state) => ({ ...state, showError: false });
+const hideError = (state) => ({ ...state, showError: false, animationInProgress: false, error: undefined });
 const animateExecution = (state) => ({ ...state, animationInProgress: true, animationStepNumber: 0 });
 const stopExecutionAnimation = (state) => ({ ...state, animationInProgress: false });
 const closeHelp = (state) => ({ ...state, showHelp: false });
@@ -17,12 +17,18 @@ let userInput = -1;
 
 const emptyCells = () => new Array(144).fill(0).map((_, i) => ({ id: i + 1, value: undefined }));
 
-const registersWithCode = (state, { code }) => {
+const newCellsWithCode = (code) => {
     const tokens = toInts(code)
     const cells = emptyCells();
-    tokens.forEach((value, index) => cells[index].value = value)
+    tokens.forEach((value, index) => cells[index].value = value);
 
-    return { ...state, registers: cells, sprint: undefined, isHalted: false };
+    return cells;
+}
+
+const registersWithCode = (state, { code }) => {
+    const cells = newCellsWithCode(code);
+
+    return { ...state, registers: cells, sprint: undefined, isHalted: false, code };
 }
 
 const markPCAndArgs = (registers, sprint) => {
@@ -37,7 +43,7 @@ const markPCAndArgs = (registers, sprint) => {
     for (let i = sprint.pc; i < sprint.pc + argLength -1; i++) {
         registers[i].isArg = true;
     }
-    
+
     const lastResult = sprint.stepExecutionResult[sprint.stepExecutionResult.length - 1];
     
     if (lastResult) {
@@ -54,8 +60,7 @@ const markPCAndArgs = (registers, sprint) => {
 
 const executeCode = (state, action) => {
     const sprint = Sprint.getInstance(100, 144, action.code, { readNumber: () => userInput });
-    const initialReg = emptyCells();
-    state.registers.forEach(({ value }, i) => initialReg[i].value = value);
+    const initialReg = newCellsWithCode(state.code);
     const registers = markPCAndArgs(
         [...initialReg],
         sprint
@@ -89,22 +94,27 @@ const isInputRequiredFromUser = (registers, pc, state) => {
 }
 
 const executeNextStep = (state) => {
-    const sprint = state.sprint.executeNext();
+    try {
+        const sprint = state.sprint.executeNext();
 
-    if (!sprint) {
-        return { ...state, isHalted: true };
+        if (!sprint) {
+            return { ...state, isHalted: true };
+        }
+
+        const registers = getCells(sprint);
+
+        return {
+            ...state,
+            registers,
+            isHalted: sprint.isHalted,
+            sprint: sprint,
+            inputRequiredFromUser: isInputRequiredFromUser(registers, sprint.pc, state),
+            userInput: undefined
+        }
+    } catch (error) {
+        return { ...state, showError: true, error, animationInProgress : false}
     }
-
-    const registers = getCells(sprint);
-
-    return {
-        ...state,
-        registers,
-        isHalted: sprint.isHalted,
-        sprint: sprint,
-        inputRequiredFromUser: isInputRequiredFromUser(registers, sprint.pc, state),
-        userInput: undefined
-    }
+    
 }
 
 const executePreviousStep = (state) => {
