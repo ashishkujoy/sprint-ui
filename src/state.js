@@ -3,7 +3,7 @@ import { toInts } from './utils';
 const Sprint = require('@ashishkuoy/sprint');
 
 const placeholderCode = '0 45 100\n0 55 101\n1 100 101 102\n9';
-
+const readInputInstCode = 6;
 
 const hideError = (state) => ({ ...state, showError: false });
 const animateExecution = (state) => ({ ...state, animationInProgress: true, animationStepNumber: 0 });
@@ -13,6 +13,8 @@ const showHelp = (state) => ({ ...state, showHelp: true });
 const showSaveCodeModal = (state) => ({ ...state, showSaveCodeModal: true });
 const hideSaveCodeModal = (state) => ({ ...state, showSaveCodeModal: false });
 
+let userInput = -1;
+
 const emptyCells = () => new Array(144).fill(0).map((_, i) => ({ id: i, value: undefined }));
 
 const registersWithCode = (state, { code }) => {
@@ -21,7 +23,7 @@ const registersWithCode = (state, { code }) => {
     tokens.forEach((value, index) => cells[index].value = value)
 
     return { ...state, registers: cells, sprint: undefined, isHalted: false };
-};
+}
 
 const markPCAndArgs = (registers, programCounter, argLength, isHalted) => {
     if (isHalted) {
@@ -38,7 +40,7 @@ const markPCAndArgs = (registers, programCounter, argLength, isHalted) => {
 }
 
 const executeCode = (state, action) => {
-    const sprint = Sprint.getInstance(100, 144, action.code);
+    const sprint = Sprint.getInstance(100, 144, action.code, {readNumber: () => userInput});
     const registers = markPCAndArgs(
         [...state.registers],
         sprint.pc,
@@ -46,7 +48,7 @@ const executeCode = (state, action) => {
         sprint.isHalted
     )
 
-    return { ...state, registers, sprint, isHalted: false };
+    return { ...state, registers, sprint, isHalted: false, userInput: undefined };
 }
 
 const loadSavedProgramNames = () => {
@@ -69,6 +71,10 @@ const getCells = (sprint) => {
     return markPCAndArgs(registers, pc, sprint.nextInstructionLength() - 1, sprint.isHalted);
 }
 
+const isInputRequiredFromUser = (registers, pc, state) => {
+    return registers[pc - 1].value === readInputInstCode && state.userInput === undefined
+}
+
 const executeNextStep = (state) => {
     const sprint = state.sprint.executeNext();
 
@@ -76,11 +82,15 @@ const executeNextStep = (state) => {
         return { ...state, isHalted: true };
     }
 
+    const registers = getCells(sprint);
+
     return {
         ...state,
-        registers: getCells(sprint),
+        registers,
         isHalted: sprint.isHalted,
-        sprint: sprint
+        sprint: sprint,
+        inputRequiredFromUser: isInputRequiredFromUser(registers, sprint.pc, state),
+        userInput: undefined
     }
 }
 
@@ -89,11 +99,15 @@ const executePreviousStep = (state) => {
     if (!sprint) {
         return { ...state, isHalted: false };
     }
+    const registers = getCells(sprint);
+
     return {
         ...state,
-        registers: getCells(sprint),
+        registers,
         isHalted: sprint.isHalted,
-        sprint: sprint
+        sprint: sprint,
+        inputRequiredFromUser: isInputRequiredFromUser(registers, sprint.pc, state),
+        userInput: undefined
     }
 }
 
@@ -102,6 +116,18 @@ const showNextAnimationStep = (state) => {
 
     return { ...newState, animationInProgress: !newState.isHalted }
 }
+
+const showLoadProgramModal = (state) => ({ ...state, showLoadProgramModal: true })
+
+const hideLoadProgramModal = (state) => ({ ...state, showLoadProgramModal: false })
+
+const setInput = (state, { input }) => {
+    userInput = input;
+    const newState = executeNextStep(state)
+    return ({ ...newState, userInput: input, inputRequiredFromUser: false, inputModalOpen: false })
+};
+
+const showInputModal = (state) => ({ ...state, inputModalOpen: true });
 
 export const initialState = {
     registers: registersWithCode({}, { code: placeholderCode }).registers,
@@ -120,6 +146,10 @@ export const initialState = {
     savedProgramNames: loadSavedProgramNames(),
     sprint: undefined,
     isHalted: false,
+    showLoadProgramModal: false,
+    userInput: undefined,
+    inputRequiredFromUser: false,
+    inputModalOpen: false
 }
 
 export const reducer = (state, action) => {
@@ -138,6 +168,10 @@ export const reducer = (state, action) => {
         case 'SaveProgram': return saveProgram(state, action)
         case 'ShowNextAnimationStep': return showNextAnimationStep(state)
         case 'IncrementAnimatedStepCount': return { ...state, animationStepNumber: state.animationStepNumber + 1 }
+        case 'ShowLoadProgramModal': return showLoadProgramModal(state)
+        case 'HideLoadProgramModal': return hideLoadProgramModal(state)
+        case 'SetInput': return setInput(state, action)
+        case 'ShowInputModal': return showInputModal(state)
         default: return state
     }
 }
@@ -154,8 +188,11 @@ export const Actions = {
     markAnimationStoped: { type: 'StopExecutionAnimation' },
     nextAnimationStep: { type: 'ShowNextAnimationStep' },
     incrementAnimatedStepCount: { type: 'IncrementAnimatedStepCount' },
-
+    showLoadProgramModal: { type: 'ShowLoadProgramModal' },
+    hideLoadProgramModal: { type: 'HideLoadProgramModal' },
+    showInputModal: {type: 'ShowInputModal'},
     executeCode: (code) => ({ type: 'ExecuteCode', code }),
     updateCode: (code) => ({ type: 'UpdateCode', code }),
     saveProgram: (programName) => ({ type: 'SaveProgram', programName }),
+    setInput: (input) => ({ type: 'SetInput', input })
 }

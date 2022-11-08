@@ -30,17 +30,21 @@ const InstructionDetails = ({ name, shortDescription, syntax ,example }) => {
     </div>)
 }
 
-const Help = ({ closeHelp }) => {
-    return <div className='help-modal'>
-        <div className='close-help-btn'>
-            <span onClick={closeHelp}>X</span>
+const Help = ({ enabled, closeHelp }) => {
+    if (enabled) {
+        return <div className='help-modal'>
+            <div className='close-help-btn'>
+                <span onClick={closeHelp}>X</span>
+            </div>
+            <div className='help-message'>
+                <h1>Sprint Simulator</h1>
+                <h2>Supported Instruction</h2>
+                {helpDetails.instructionDetails.map((detail, i) => <InstructionDetails {...detail} key={i} />)}
+            </div>
         </div>
-        <div className='help-message'>
-            <h1>Sprint Simulator</h1>
-            <h2>Supported Instruction</h2>
-            {helpDetails.instructionDetails.map((detail, i) => <InstructionDetails {...detail} key={i} />)}
-        </div>
-    </div>
+    } else {
+        return <></>
+    }
 }
 
 export default Help;

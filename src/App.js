@@ -4,10 +4,11 @@ import AppHeader from './components/AppHeader';
 import Editor from './components/Editor';
 import ErrorModal from './components/ErrorModal';
 import Help from './components/Help';
-import Load from './components/Load';
 import RegisterGroup from './components/RegisterGroup';
 import ProgramNamePrompt from './components/Save';
 import { Actions, initialState, reducer } from './state';
+import FileNameSelector from './components/Load';
+import InputModal from './components/InputModal';
 
 const nextStepAvailable = (state) => state.sprint && !state.isHalted
 
@@ -22,7 +23,9 @@ const previousEnabled = (state) => {
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const modalOpen = state.showError || state.showHelp || state.showSaveCodeModal;
+  const modalOpen = state.showError || state.showHelp ||
+    state.showSaveCodeModal || state.showLoadProgramModal ||
+    state.inputModalOpen;
 
   if (state.animationInProgress && nextStepAvailable(state)) {
     setTimeout(() => dispatch(Actions.nextAnimationStep), state.animationDelay)
@@ -34,8 +37,8 @@ function App() {
         <AppHeader modalOpen={modalOpen} onHelpClick={() => dispatch(Actions.showHelp)} />
         <div className={modalOpen ? 'disabled-screen' : ''}>
           <div className='load-save'>
-            <Load savedFileNames={[]}></Load>
-            <button onClick={() => dispatch(Actions.showSaveCodeModal)}>Save</button>
+            <button onClick={() => dispatch(Actions.showSaveProgramModal)}>Save</button>
+            <button onClick={() => dispatch(Actions.showLoadProgramModal)}>Load</button>
           </div>
           <div className='editor-and-register'>
             <Editor
@@ -46,7 +49,7 @@ function App() {
             <RegisterGroup
               registers={state.registers}
               onRunClick={() => dispatch(Actions.markAnimationStarted)}
-              onNextStepClick={() => dispatch(Actions.incrementStep)}
+              onNextStepClick={() => state.inputRequiredFromUser ? dispatch(Actions.showInputModal) : dispatch(Actions.incrementStep)}
               onPreviousStepClick={() => dispatch(Actions.decrementStep)}
               nextStepEnabled={nextEnabled(state)}
               previousStepEnabled={previousEnabled(state)}
@@ -55,19 +58,27 @@ function App() {
           </div>
         </div>
       </div>
-      {
-        state.showError ? <ErrorModal
-          error={state.error}
-          onClose={() => dispatch(Actions.hideError)}
-        /> : <></>
-      }
-      {
-        state.showHelp ? <Help closeHelp={() => dispatch(Actions.closeHelp)} /> : <></>
-      }
+      <ErrorModal
+        enabled={state.showError}
+        error={state.error}
+        onClose={() => dispatch(Actions.hideError)}
+      /> : <></>
+      <Help enabled={state.showHelp} closeHelp={() => dispatch(Actions.closeHelp)} />
+
       <ProgramNamePrompt
         enabled={state.showSaveCodeModal}
         onSave={(programName) => dispatch(Actions.saveProgram(programName))}
         onCancel={() => dispatch(Actions.hideSaveCodeModal)}
+      />
+      <FileNameSelector
+        enabled={state.showLoadProgramModal}
+        fileNames={state.savedProgramNames}
+        closeModal={() => dispatch(Actions.hideLoadProgramModal)}
+        className='file-name-modal'
+      />
+      <InputModal
+        enabled={state.inputModalOpen}
+        onSubmit={(number) => dispatch(Actions.setInput(number))}
       />
     </>
   );

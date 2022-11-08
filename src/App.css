@@ -208,7 +208,7 @@ table {
   margin-top: 10px;
 }
 
-.filename-prompt {
+.prompt {
   position: absolute;
   left: 700px;
   top: 350px;
@@ -220,8 +220,18 @@ table {
   font-size: 20px;
 }
 
-.filename-prompt input {
+.prompt input {
   width: 100%;
   font-size: 20px;
   height: 25px;
+}
+
+.file-name-modal span {
+  display: flex;
+  justify-content: right;
+  margin-bottom: 20px;
+}
+
+.file-name-modal select {
+  width: 200px;
 }

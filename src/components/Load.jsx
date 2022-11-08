@@ -1,20 +1,24 @@
-import { useState } from "react";
 
-const FileNameSelector = ({ fileNames }) => {
-    return <div className='program-name-selector'>
-        <label htmlFor='programName'>Choose File</label>
-        <select name='programName' onChange={(e) => console.log(e)}>
-            {fileNames.map(fileName => <option value={fileName} key={fileName}>{fileName}</option>)}
-        </select>
-    </div>
+export const FileNameSelector = ({ enabled, fileNames, closeModal, className }) => {
+    if (enabled) {
+        return <div className={`prompt ${className ? className :''}`}>
+            <div>
+                <span onClick={closeModal}>X</span>
+            </div>
+            <div>
+                <label htmlFor='programName'>Choose File</label>
+                <select name='programName' onChange={(e) => console.log(e)}>
+                    {fileNames.map(fileName => <option value={fileName} key={fileName}>{fileName}</option>)}
+                </select>
+            </div>
+            <div>
+                <button>Load</button>
+            </div>
+        </div>    
+    } else {
+        <></>
+    }
+    
 }
 
-const Load = ({ savedFileNames }) => {
-    const [showLoad, setShowLoad] = useState(false);
-    return (<>
-        <button onClick={() => setShowLoad(true)}>Load</button>
-        {showLoad ? <FileNameSelector fileNames={savedFileNames}/> : <></>}
-    </>)
-}
-
-export default Load
+export default FileNameSelector;
