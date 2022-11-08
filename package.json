@@ -2,7 +2,7 @@
   "name": "sprint-simulator",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://ashishkujoy.github.io/sprint-ui-v2",
+  "homepage": "https://ashishkujoy.github.io/sprint-ui",
   "dependencies": {
     "@ashishkuoy/sprint": "^1.0.7",
     "@testing-library/jest-dom": "^5.16.5",
