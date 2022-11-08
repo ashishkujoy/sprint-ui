@@ -25,10 +25,16 @@ function App() {
 
   const modalOpen = state.showError || state.showHelp ||
     state.showSaveCodeModal || state.showLoadProgramModal ||
-    state.inputModalOpen;
+    (state.inputModalOpen && state.inputRequiredFromUser);
 
   if (state.animationInProgress && nextStepAvailable(state)) {
-    setTimeout(() => dispatch(Actions.nextAnimationStep), state.animationDelay)
+    setTimeout(() => {
+      if (state.inputRequiredFromUser) {
+        dispatch(Actions.showInputModal)
+      } else {
+        dispatch(Actions.nextAnimationStep)
+      }
+    }, state.animationDelay)
   }
 
   return (
@@ -77,7 +83,7 @@ function App() {
         className='file-name-modal'
       />
       <InputModal
-        enabled={state.inputModalOpen}
+        enabled={state.inputModalOpen && state.inputRequiredFromUser}
         onSubmit={(number) => dispatch(Actions.setInput(number))}
       />
     </>

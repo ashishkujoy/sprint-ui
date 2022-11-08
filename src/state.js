@@ -15,7 +15,7 @@ const hideSaveCodeModal = (state) => ({ ...state, showSaveCodeModal: false });
 
 let userInput = -1;
 
-const emptyCells = () => new Array(144).fill(0).map((_, i) => ({ id: i, value: undefined }));
+const emptyCells = () => new Array(144).fill(0).map((_, i) => ({ id: i + 1, value: undefined }));
 
 const registersWithCode = (state, { code }) => {
     const tokens = toInts(code)
@@ -25,27 +25,40 @@ const registersWithCode = (state, { code }) => {
     return { ...state, registers: cells, sprint: undefined, isHalted: false };
 }
 
-const markPCAndArgs = (registers, programCounter, argLength, isHalted) => {
-    if (isHalted) {
-        registers[programCounter - 1].isHaltInstruction = true;
+const markPCAndArgs = (registers, sprint) => {
+    if (sprint.isHalted) {
+        registers[sprint.pc - 1].isHaltInstruction = true;
     } else {
-        registers[programCounter - 1].isCurrentInstruction = true;
+        registers[sprint.pc - 1].isCurrentInstruction = true;
     }
 
-    for (let i = programCounter; i < programCounter + argLength; i++) {
+    const argLength = sprint.nextInstructionLength();
+
+    for (let i = sprint.pc; i < sprint.pc + argLength -1; i++) {
         registers[i].isArg = true;
     }
-
+    
+    const lastResult = sprint.stepExecutionResult[sprint.stepExecutionResult.length - 1];
+    
+    if (lastResult) {
+        const changedCell = lastResult.previousCells.cells.find(({value}, index) => {
+            return registers[index].value !== value;
+        });
+        if (changedCell) {
+            registers[changedCell.id].isLatestUpdatedRegister = true;
+        }
+    }
+    
     return registers;
 }
 
 const executeCode = (state, action) => {
-    const sprint = Sprint.getInstance(100, 144, action.code, {readNumber: () => userInput});
+    const sprint = Sprint.getInstance(100, 144, action.code, { readNumber: () => userInput });
+    const initialReg = emptyCells();
+    state.registers.forEach(({ value }, i) => initialReg[i].value = value);
     const registers = markPCAndArgs(
-        [...state.registers],
-        sprint.pc,
-        sprint.nextInstructionLength() - 1,
-        sprint.isHalted
+        [...initialReg],
+        sprint
     )
 
     return { ...state, registers, sprint, isHalted: false, userInput: undefined };
@@ -68,7 +81,7 @@ const getCells = (sprint) => {
     const { cells, pc } = sprint;
     const registers = emptyCells();
     cells.cells.forEach(({ value }, index) => registers[index].value = value);
-    return markPCAndArgs(registers, pc, sprint.nextInstructionLength() - 1, sprint.isHalted);
+    return markPCAndArgs(registers, sprint);
 }
 
 const isInputRequiredFromUser = (registers, pc, state) => {
@@ -124,10 +137,10 @@ const hideLoadProgramModal = (state) => ({ ...state, showLoadProgramModal: false
 const setInput = (state, { input }) => {
     userInput = input;
     const newState = executeNextStep(state)
-    return ({ ...newState, userInput: input, inputRequiredFromUser: false, inputModalOpen: false })
+    return ({ ...newState, inputRequiredFromUser: false, inputModalOpen: false })
 };
 
-const showInputModal = (state) => ({ ...state, inputModalOpen: true });
+const showInputModal = (state) => ({ ...state, inputModalOpen: true, userInput: undefined });
 
 export const initialState = {
     registers: registersWithCode({}, { code: placeholderCode }).registers,
@@ -190,7 +203,7 @@ export const Actions = {
     incrementAnimatedStepCount: { type: 'IncrementAnimatedStepCount' },
     showLoadProgramModal: { type: 'ShowLoadProgramModal' },
     hideLoadProgramModal: { type: 'HideLoadProgramModal' },
-    showInputModal: {type: 'ShowInputModal'},
+    showInputModal: { type: 'ShowInputModal' },
     executeCode: (code) => ({ type: 'ExecuteCode', code }),
     updateCode: (code) => ({ type: 'UpdateCode', code }),
     saveProgram: (programName) => ({ type: 'SaveProgram', programName }),
