@@ -3,20 +3,20 @@ import './App.css';
 import AppHeader from './components/AppHeader';
 import Editor from './components/Editor';
 import ErrorModal from './components/ErrorModal';
-import RegisterGroup from './components/RegisterGroup';
 import Help from './components/Help';
-import { Actions, initialState, reducer } from './state';
-import { repeat, saveProgram } from './utils';
-import Button from './components/Save';
 import Load from './components/Load';
+import RegisterGroup from './components/RegisterGroup';
 import ProgramNamePrompt from './components/Save';
+import { Actions, initialState, reducer } from './state';
 
-const nextStepAvailable = (state) => {
+const nextStepAvailable = (state) => state.sprint && !state.isHalted
+
+const nextEnabled = (state) => {
   return !state.animationInProgress && state.sprint && !state.isHalted
 }
 
 const previousEnabled = (state) => {
-  return !state.animationInProgress && state.sprint && state.sprint.programCounter !== 1;
+  return !state.animationInProgress && state.sprint && state.sprint.pc !== 1;
 }
 
 
@@ -25,13 +25,11 @@ function App() {
 
   const modalOpen = state.showError || state.showHelp || state.showSaveCodeModal;
 
-  const animate = () => {
-    dispatch(Actions.markAnimationStarted);
-    repeat(
-      state.executionResult.length - state.stepNumber - 1,
-      () => dispatch(Actions.incrementStep),
-      state.animationDelay
-    ).then(() => dispatch(Actions.markAnimationStoped));
+  if (state.animationInProgress && nextStepAvailable(state)) {
+    setTimeout(
+      () => dispatch(Actions.nextAnimationStep),
+      state.animationDelay * (state.animationStepNumber + 1)
+    );
   }
 
   return (
@@ -51,10 +49,10 @@ function App() {
             />
             <RegisterGroup
               registers={state.registers}
-              onRunClick={animate}
+              onRunClick={() => dispatch(Actions.markAnimationStarted)}
               onNextStepClick={() => dispatch(Actions.incrementStep)}
               onPreviousStepClick={() => dispatch(Actions.decrementStep)}
-              nextStepEnabled={nextStepAvailable(state)}
+              nextStepEnabled={nextEnabled(state)}
               previousStepEnabled={previousEnabled(state)}
               runEnabled={nextStepAvailable(state)}
             />

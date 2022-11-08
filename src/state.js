@@ -8,7 +8,7 @@ const placeholderCode = '0 45 100\n0 55 101\n1 100 101 102\n9';
 
 
 const hideError = (state) => ({ ...state, showError: false });
-const animateExecution = (state) => ({ ...state, animationInProgress: true });
+const animateExecution = (state) => ({ ...state, animationInProgress: true, animationStepNumber: 0 });
 const stopExecutionAnimation = (state) => ({ ...state, animationInProgress: false });
 const closeHelp = (state) => ({ ...state, showHelp: false });
 const showHelp = (state) => ({ ...state, showHelp: true });
@@ -58,7 +58,7 @@ const saveProgram = (state, action) => {
 const getCells = (sprint) => {
     const { cells, pc } = sprint;
     const registers = emptyCells();
-    cells.cells.forEach(({value}, index) => registers[index].value = value);
+    cells.cells.forEach(({ value }, index) => registers[index].value = value);
     return markPCAndArgs(registers, pc, sprint.nextInstructionLength() - 1);
 }
 
@@ -77,6 +77,23 @@ const executeNextStep = (state) => {
     }
 }
 
+const executePreviousStep = (state) => {
+    const sprint = state.sprint.executePrevious();
+    if (!sprint) {
+        return { ...state, isHalted: false };
+    }
+    return {
+        ...state,
+        registers: getCells(sprint),
+        isHalted: sprint.isHalted,
+        sprint: sprint
+    }
+}
+
+const showNextAnimationStep = (state) => {
+    return { ...executeNextStep(state), animationStepNumber: state.animationStepNumber + 1 }
+}
+
 export const initialState = {
     registers: registersWithCode({}, { code: placeholderCode }).registers,
     executionResult: [],
@@ -86,6 +103,7 @@ export const initialState = {
     showError: false,
     maxInstructionCountReached: false,
     animationDelay: 500,
+    animationStepNumber: 0,
     animationInProgress: false,
     showHelp: false,
     code: placeholderCode,
@@ -98,7 +116,7 @@ export const initialState = {
 export const reducer = (state, action) => {
     switch (action.type) {
         case 'IncrementStep': return executeNextStep(state)
-        case 'DecrementStep': return new Sprinter(state).previousStep()
+        case 'DecrementStep': return executePreviousStep(state)
         case 'UpdateCode': return registersWithCode(state, action)
         case 'ExecuteCode': return executeCode(state, action)
         case 'HideError': return hideError(state)
@@ -109,6 +127,7 @@ export const reducer = (state, action) => {
         case 'ShowSaveCodeModal': return showSaveCodeModal(state)
         case 'HideSaveCodeModal': return hideSaveCodeModal(state)
         case 'SaveProgram': return saveProgram(state, action)
+        case 'ShowNextAnimationStep': return showNextAnimationStep(state)
         default: return state
     }
 }
@@ -123,6 +142,7 @@ export const Actions = {
     hideSaveCodeModal: { type: 'HideSaveCodeModal' },
     markAnimationStarted: { type: 'AnimateExecution' },
     markAnimationStoped: { type: 'StopExecutionAnimation' },
+    nextAnimationStep: { type: 'ShowNextAnimationStep' },
 
     executeCode: (code) => ({ type: 'ExecuteCode', code }),
     updateCode: (code) => ({ type: 'UpdateCode', code }),
