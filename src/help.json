@@ -28,21 +28,39 @@
             ]
         },
         {
-            "name": "Halt",
-            "shortDescription": "Halt instruction stop the execution of program",
-            "syntax": "9",
-            "example": [
-                "The instruction [9] at line 2, stops the execution of program. Instruction below line 2 won't execute",
-                "CODE-BLOCK 0 45 100\n9 \n0 50 102\n0 55 101"
-            ]
-        },
-        {
             "name": "Jump",
             "shortDescription": "Jumps moves the program counter to the specified cell number",
             "syntax": "3 [cell number]",
             "example": [
                 "The instruction [3 13] at line 3 moves the program counter to cell number 13, as a result program execute halt instruction of cell number 13 instead of add instruction of cell number 9",
                 "CODE-BLOCK 0 45 100\n0 55 101\n3 13\n1 100 101 102\n9"
+            ]
+        },
+        {
+            "name": "JumpIfEqual",
+            "shortDescription": "JumpsIfEqual moves the program counter to the specified cell number if value in lhs cell is equal to rhs cell",
+            "syntax": "4 [lhs cell number] [rhs cell number] [cell number]",
+            "example": [
+                "The instruction [4 100 101 15] at line 3 moves the program counter to cell number 15, as a result program execute halt instruction of cell number 13 instead of add instruction",
+                "CODE-BLOCK 0 45 100\n0 45 101\n4 100 101 15\n1 100 101 102\n9"
+            ]
+        },
+        {
+            "name": "Read",
+            "shortDescription": "Read reads the user input and put that input to the specified cell number",
+            "syntax": "6 [cell number]",
+            "example": [
+                "The instruction [6 1] at line 2 reads the user input and put that value in register 1",
+                "CODE-BLOCK 0 45 100\n6 1\n9"
+            ]
+        },
+        {
+            "name": "Halt",
+            "shortDescription": "Halt instruction stop the execution of program",
+            "syntax": "9",
+            "example": [
+                "The instruction [9] at line 2, stops the execution of program. Instruction below line 2 won't execute",
+                "CODE-BLOCK 0 45 100\n9 \n0 50 102\n0 55 101"
             ]
         }
     ]
