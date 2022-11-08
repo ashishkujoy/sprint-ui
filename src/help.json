@@ -1,0 +1,49 @@
+{
+    "instructionDetails": [
+        {
+            "name": "Put",
+            "shortDescription": "Put instruction put the given number in specified cell number",
+            "syntax": "0 [Number] [Cell Number]",
+            "example": [
+                "The instruction [0 20 10] at line 1, puts the number 20 in cell number 10",
+                "CODE-BLOCK 0 20 10\n9"
+            ]
+        },
+        {
+            "name": "Add",
+            "shortDescription": "Add instruction adds the number present specified cell number and put the result of addition in result cell number",
+            "syntax": "1 [lhs cell number] [rhs cell number] [Result cell number]",
+            "example": [
+                "The instruction [1 101 100 102], adds value present in cell number 101 and 100 and put the result of addition in cell number 102",
+                "CODE-BLOCK 0 45 100\n0 55 101\n1 101 100 102\n9"
+            ]
+        },
+        {
+            "name": "Subtract",
+            "shortDescription": "Subtract instruction subtracts the number present specified cell number and put the result of subtraction in result cell number",
+            "syntax": "2 [lhs cell number] [rhs cell number] [Result cell number]",
+            "example": [
+                "The instruction [2 101 100 102] at line 3, subtracts value present in cell number 100 from value present in cell number 101 and put the result of subtraction in cell number 102",
+                "CODE-BLOCK 0 45 100\n0 55 101\n2 101 100 102\n9"
+            ]
+        },
+        {
+            "name": "Halt",
+            "shortDescription": "Halt instruction stop the execution of program",
+            "syntax": "9",
+            "example": [
+                "The instruction [9] at line 2, stops the execution of program. Instruction below line 2 won't execute",
+                "CODE-BLOCK 0 45 100\n9 \n0 50 102\n0 55 101"
+            ]
+        },
+        {
+            "name": "Jump",
+            "shortDescription": "Jumps moves the program counter to the specified cell number",
+            "syntax": "3 [cell number]",
+            "example": [
+                "The instruction [3 13] at line 3 moves the program counter to cell number 13, as a result program execute halt instruction of cell number 13 instead of add instruction of cell number 9",
+                "CODE-BLOCK 0 45 100\n0 55 101\n3 13\n1 100 101 102\n9"
+            ]
+        }
+    ]
+}
