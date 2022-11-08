@@ -1,15 +1,15 @@
 
-const AnimationSpeedSelector = ({ animationSpeed, onSpeedChange }) => {
-    const updateSpeed = ({target: {value}}) => {
-        const speed = parseInt(value);
-        if (speed > 0) {
-            onSpeedChange(speed);
+const AnimationSpeedSelector = ({ value, onChange, title, min }) => {
+    const updateValue = ({ target: { value } }) => {
+        const val = parseInt(value);
+        if (val > 0) {
+            onChange(val);
         }
     };
 
     return <div className='animation-speed'>
-        <span>Animation Speed</span>
-        <input type='number' min={1} value={animationSpeed} onChange={updateSpeed}></input>
+        <span>{title}</span>
+        <input type='number' min={min} value={value} onChange={updateValue}></input>
     </div>
 }
 

@@ -59,7 +59,7 @@ const markPCAndArgs = (registers, sprint) => {
 }
 
 const executeCode = (state, action) => {
-    const sprint = Sprint.getInstance(100, 144, action.code, { readNumber: () => userInput });
+    const sprint = Sprint.getInstance(state.maxInstruction, 144, action.code, { readNumber: () => userInput });
     const initialReg = newCellsWithCode(state.code);
     const registers = markPCAndArgs(
         [...initialReg],
@@ -164,6 +164,8 @@ const loadProgram = (state, { programName }) => {
     }
 }
 
+const setMaxInstructions = (state, {maxInstruction}) => ({...state, maxInstruction})
+
 export const initialState = {
     registers: registersWithCode({}, { code: placeholderCode }).registers,
     executionResult: [],
@@ -184,7 +186,8 @@ export const initialState = {
     showLoadProgramModal: false,
     userInput: undefined,
     inputRequiredFromUser: false,
-    inputModalOpen: false
+    inputModalOpen: false,
+    maxInstruction: 100
 }
 
 export const reducer = (state, action) => {
@@ -209,6 +212,7 @@ export const reducer = (state, action) => {
         case 'ShowInputModal': return showInputModal(state)
         case 'LoadProgram': return loadProgram(state, action)
         case 'SetAnimationSpeed' : return setAnimationSpeed(state, action)
+        case 'SetMaxInstructions': return setMaxInstructions(state, action)
         default: return state
     }
 }
@@ -233,5 +237,7 @@ export const Actions = {
     saveProgram: (programName) => ({ type: 'SaveProgram', programName }),
     setInput: (input) => ({ type: 'SetInput', input }),
     loadProgram: (programName) => ({ type: 'LoadProgram', programName }),
-    setAnimationSpeed: (speed) => ({ type: 'SetAnimationSpeed', speed})
+    setAnimationSpeed: (speed) => ({ type: 'SetAnimationSpeed', speed }),
+    setMaxInstructions: (maxInstruction) => ({ type: 'SetMaxInstructions', maxInstruction }),
+    
 }

@@ -45,8 +45,16 @@ function App() {
         <div className={modalOpen ? 'disabled-screen' : ''}>
           <div className='load-save'>
             <AnimationSpeedSelector
-              animationSpeed={state.animationDelay}
-              onSpeedChange={(speed) => dispatch(Actions.setAnimationSpeed(speed))}
+              title='Max Instructions'
+              value={state.maxInstruction}
+              min={100}
+              onChange={(maxInstruction) => dispatch(Actions.setMaxInstructions(maxInstruction))}
+            />
+            <AnimationSpeedSelector
+              title='Animation Speed'
+              value={state.animationDelay}
+              min={0}
+              onChange={(speed) => dispatch(Actions.setAnimationSpeed(speed))}
             />
             <button onClick={() => dispatch(Actions.showSaveProgramModal)}>Save</button>
             <button onClick={() => dispatch(Actions.showLoadProgramModal)}>Load</button>
