@@ -83,7 +83,7 @@ const saveProgram = (state, action) => {
 }
 
 const getCells = (sprint) => {
-    const { cells, pc } = sprint;
+    const { cells } = sprint;
     const registers = emptyCells();
     cells.cells.forEach(({ value }, index) => registers[index].value = value);
     return markPCAndArgs(registers, sprint);
