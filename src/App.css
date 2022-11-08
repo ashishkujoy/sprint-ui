@@ -235,3 +235,20 @@ table {
 .file-name-modal select {
   width: 200px;
 }
+
+.load-save button {
+  margin-right: 25px;
+}
+
+.animation-speed {
+  display: flex;
+  font-size: 29px;
+  padding-top: 5px;
+}
+
+.animation-speed input {
+  font-size: 20px;
+  width: 100px;
+  margin-left: 10px;
+    margin-right: 10px;
+}

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import CodeMirror from '@uiw/react-codemirror';
 
 const CodeVerficationButton = ({ codeVerified, onLoadCodeClick }) => {
@@ -13,16 +12,10 @@ const CodeVerficationButton = ({ codeVerified, onLoadCodeClick }) => {
     }
 }
 
-const Editor = ({ onVerifyCode, onCodeChange, codeVerified }) => {
-    const [code, setCode] = useState('0 45 100\n0 55 101\n1 100 101 102\n9');
+const Editor = ({ onVerifyCode, onCodeChange, codeVerified, code }) => {
 
     const onLoadCodeClick = () => {
         onVerifyCode(code.trim());
-    }
-
-    const onChange = (value) => {
-        setCode(value);
-        onCodeChange(value);
     }
 
     return (<div className='editor-container'>
@@ -31,7 +24,7 @@ const Editor = ({ onVerifyCode, onCodeChange, codeVerified }) => {
             placeholder={code}
             height="720px"
             width='400px'
-            onChange={onChange}
+            onChange={onCodeChange}
             autoFocus={true}
             basicSetup={{
                 highlightActiveLine: true,

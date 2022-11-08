@@ -10,8 +10,8 @@ const animateExecution = (state) => ({ ...state, animationInProgress: true, anim
 const stopExecutionAnimation = (state) => ({ ...state, animationInProgress: false });
 const closeHelp = (state) => ({ ...state, showHelp: false });
 const showHelp = (state) => ({ ...state, showHelp: true });
-const showSaveCodeModal = (state) => ({ ...state, showSaveCodeModal: true });
-const hideSaveCodeModal = (state) => ({ ...state, showSaveCodeModal: false });
+const ShowSaveProgramModal = (state) => ({ ...state, showSaveProgramModal: true });
+const hideSaveCodeModal = (state) => ({ ...state, showSaveProgramModal: false });
 
 let userInput = -1;
 
@@ -40,21 +40,21 @@ const markPCAndArgs = (registers, sprint) => {
 
     const argLength = sprint.nextInstructionLength();
 
-    for (let i = sprint.pc; i < sprint.pc + argLength -1; i++) {
+    for (let i = sprint.pc; i < sprint.pc + argLength - 1; i++) {
         registers[i].isArg = true;
     }
 
     const lastResult = sprint.stepExecutionResult[sprint.stepExecutionResult.length - 1];
-    
+
     if (lastResult) {
-        const changedCell = lastResult.previousCells.cells.find(({value}, index) => {
+        const changedCell = lastResult.previousCells.cells.find(({ value }, index) => {
             return registers[index].value !== value;
         });
         if (changedCell) {
             registers[changedCell.id].isLatestUpdatedRegister = true;
         }
     }
-    
+
     return registers;
 }
 
@@ -79,7 +79,7 @@ const saveProgram = (state, action) => {
     programs[action.programName] = state.code;
     localStorage.setItem('sprintPrograms', JSON.stringify(programs));
 
-    return { ...state, showSaveCodeModal: false, savedProgramNames: Object.keys(programs) };
+    return { ...state, showSaveProgramModal: false, savedProgramNames: Object.keys(programs) };
 }
 
 const getCells = (sprint) => {
@@ -112,9 +112,9 @@ const executeNextStep = (state) => {
             userInput: undefined
         }
     } catch (error) {
-        return { ...state, showError: true, error, animationInProgress : false}
+        return { ...state, showError: true, error, animationInProgress: false }
     }
-    
+
 }
 
 const executePreviousStep = (state) => {
@@ -152,6 +152,18 @@ const setInput = (state, { input }) => {
 
 const showInputModal = (state) => ({ ...state, inputModalOpen: true, userInput: undefined });
 
+const setAnimationSpeed = (state, {speed}) => ({ ...state, animationDelay : speed})
+
+const loadProgram = (state, { programName }) => {
+    const code = JSON.parse(localStorage.getItem('sprintPrograms') || '{}')[programName];
+    
+    if (code) {
+        return { ...registersWithCode(state, { code }), showLoadProgramModal: false, code}
+    } else {
+        return { ...state, showLoadProgramModal: false }
+    }
+}
+
 export const initialState = {
     registers: registersWithCode({}, { code: placeholderCode }).registers,
     executionResult: [],
@@ -165,7 +177,7 @@ export const initialState = {
     animationInProgress: false,
     showHelp: false,
     code: placeholderCode,
-    showSaveCodeModal: false,
+    showSaveProgramModal: false,
     savedProgramNames: loadSavedProgramNames(),
     sprint: undefined,
     isHalted: false,
@@ -186,7 +198,7 @@ export const reducer = (state, action) => {
         case 'StopExecutionAnimation': return stopExecutionAnimation(state)
         case 'CloseHelp': return closeHelp(state)
         case 'ShowHelp': return showHelp(state)
-        case 'ShowSaveCodeModal': return showSaveCodeModal(state)
+        case 'ShowSaveProgramModal': return ShowSaveProgramModal(state)
         case 'HideSaveCodeModal': return hideSaveCodeModal(state)
         case 'SaveProgram': return saveProgram(state, action)
         case 'ShowNextAnimationStep': return showNextAnimationStep(state)
@@ -195,6 +207,8 @@ export const reducer = (state, action) => {
         case 'HideLoadProgramModal': return hideLoadProgramModal(state)
         case 'SetInput': return setInput(state, action)
         case 'ShowInputModal': return showInputModal(state)
+        case 'LoadProgram': return loadProgram(state, action)
+        case 'SetAnimationSpeed' : return setAnimationSpeed(state, action)
         default: return state
     }
 }
@@ -205,7 +219,7 @@ export const Actions = {
     hideError: { type: 'HideError' },
     closeHelp: { type: 'CloseHelp' },
     showHelp: { type: 'ShowHelp' },
-    showSaveCodeModal: { type: 'ShowSaveCodeModal' },
+    showSaveProgramModal: { type: 'ShowSaveProgramModal' },
     hideSaveCodeModal: { type: 'HideSaveCodeModal' },
     markAnimationStarted: { type: 'AnimateExecution' },
     markAnimationStoped: { type: 'StopExecutionAnimation' },
@@ -217,5 +231,7 @@ export const Actions = {
     executeCode: (code) => ({ type: 'ExecuteCode', code }),
     updateCode: (code) => ({ type: 'UpdateCode', code }),
     saveProgram: (programName) => ({ type: 'SaveProgram', programName }),
-    setInput: (input) => ({ type: 'SetInput', input })
+    setInput: (input) => ({ type: 'SetInput', input }),
+    loadProgram: (programName) => ({ type: 'LoadProgram', programName }),
+    setAnimationSpeed: (speed) => ({ type: 'SetAnimationSpeed', speed})
 }

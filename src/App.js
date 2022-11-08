@@ -9,6 +9,7 @@ import ProgramNamePrompt from './components/Save';
 import { Actions, initialState, reducer } from './state';
 import FileNameSelector from './components/Load';
 import InputModal from './components/InputModal';
+import AnimationSpeedSelector from './components/AnimationSpeedSelector';
 
 const nextStepAvailable = (state) => state.sprint && !state.isHalted
 
@@ -24,7 +25,7 @@ function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const modalOpen = state.showError || state.showHelp ||
-    state.showSaveCodeModal || state.showLoadProgramModal ||
+    state.showSaveProgramModal || state.showLoadProgramModal ||
     (state.inputModalOpen && state.inputRequiredFromUser);
 
   if (state.animationInProgress && nextStepAvailable(state) && !state.error) {
@@ -43,6 +44,10 @@ function App() {
         <AppHeader modalOpen={modalOpen} onHelpClick={() => dispatch(Actions.showHelp)} />
         <div className={modalOpen ? 'disabled-screen' : ''}>
           <div className='load-save'>
+            <AnimationSpeedSelector
+              animationSpeed={state.animationDelay}
+              onSpeedChange={(speed) => dispatch(Actions.setAnimationSpeed(speed))}
+            />
             <button onClick={() => dispatch(Actions.showSaveProgramModal)}>Save</button>
             <button onClick={() => dispatch(Actions.showLoadProgramModal)}>Load</button>
           </div>
@@ -51,6 +56,7 @@ function App() {
               onVerifyCode={(code) => dispatch(Actions.executeCode(code))}
               onCodeChange={(code) => dispatch(Actions.updateCode(code))}
               codeVerified={state.codeVerified}
+              code={state.code}
             />
             <RegisterGroup
               registers={state.registers}
@@ -72,7 +78,7 @@ function App() {
       <Help enabled={state.showHelp} closeHelp={() => dispatch(Actions.closeHelp)} />
 
       <ProgramNamePrompt
-        enabled={state.showSaveCodeModal}
+        enabled={state.showSaveProgramModal}
         onSave={(programName) => dispatch(Actions.saveProgram(programName))}
         onCancel={() => dispatch(Actions.hideSaveCodeModal)}
       />
@@ -80,6 +86,7 @@ function App() {
         enabled={state.showLoadProgramModal}
         fileNames={state.savedProgramNames}
         closeModal={() => dispatch(Actions.hideLoadProgramModal)}
+        onFileSelection={(programName) => dispatch(Actions.loadProgram(programName))}
         className='file-name-modal'
       />
       <InputModal
