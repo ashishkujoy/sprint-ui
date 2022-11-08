@@ -1,5 +1,3 @@
-import registers from '@ashishkuoy/sprint/registers';
-import Sprinter from './sprint';
 import { toInts } from './utils';
 
 const Sprint = require('@ashishkuoy/sprint');
@@ -22,11 +20,15 @@ const registersWithCode = (state, { code }) => {
     const cells = emptyCells();
     tokens.forEach((value, index) => cells[index].value = value)
 
-    return { ...state, registers: cells, sprint: undefined };
+    return { ...state, registers: cells, sprint: undefined, isHalted: false };
 };
 
-const markPCAndArgs = (registers, programCounter, argLength) => {
-    registers[programCounter - 1].isCurrentInstruction = true;
+const markPCAndArgs = (registers, programCounter, argLength, isHalted) => {
+    if (isHalted) {
+        registers[programCounter - 1].isHaltInstruction = true;
+    } else {
+        registers[programCounter - 1].isCurrentInstruction = true;
+    }
 
     for (let i = programCounter; i < programCounter + argLength; i++) {
         registers[i].isArg = true;
@@ -37,9 +39,14 @@ const markPCAndArgs = (registers, programCounter, argLength) => {
 
 const executeCode = (state, action) => {
     const sprint = Sprint.getInstance(100, 144, action.code);
-    const registers = markPCAndArgs([...state.registers], sprint.pc, sprint.nextInstructionLength() - 1)
+    const registers = markPCAndArgs(
+        [...state.registers],
+        sprint.pc,
+        sprint.nextInstructionLength() - 1,
+        sprint.isHalted
+    )
 
-    return { ...state, registers, sprint };
+    return { ...state, registers, sprint, isHalted: false };
 }
 
 const loadSavedProgramNames = () => {
@@ -59,7 +66,7 @@ const getCells = (sprint) => {
     const { cells, pc } = sprint;
     const registers = emptyCells();
     cells.cells.forEach(({ value }, index) => registers[index].value = value);
-    return markPCAndArgs(registers, pc, sprint.nextInstructionLength() - 1);
+    return markPCAndArgs(registers, pc, sprint.nextInstructionLength() - 1, sprint.isHalted);
 }
 
 const executeNextStep = (state) => {
