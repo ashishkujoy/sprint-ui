@@ -91,7 +91,9 @@ const executePreviousStep = (state) => {
 }
 
 const showNextAnimationStep = (state) => {
-    return { ...executeNextStep(state), animationStepNumber: state.animationStepNumber + 1 }
+    const newState = executeNextStep(state);
+
+    return { ...newState, animationInProgress: !newState.isHalted }
 }
 
 export const initialState = {
@@ -110,7 +112,7 @@ export const initialState = {
     showSaveCodeModal: false,
     savedProgramNames: loadSavedProgramNames(),
     sprint: undefined,
-    isHalted: false
+    isHalted: false,
 }
 
 export const reducer = (state, action) => {
@@ -128,6 +130,7 @@ export const reducer = (state, action) => {
         case 'HideSaveCodeModal': return hideSaveCodeModal(state)
         case 'SaveProgram': return saveProgram(state, action)
         case 'ShowNextAnimationStep': return showNextAnimationStep(state)
+        case 'IncrementAnimatedStepCount': return { ...state, animationStepNumber: state.animationStepNumber + 1 }
         default: return state
     }
 }
@@ -143,6 +146,7 @@ export const Actions = {
     markAnimationStarted: { type: 'AnimateExecution' },
     markAnimationStoped: { type: 'StopExecutionAnimation' },
     nextAnimationStep: { type: 'ShowNextAnimationStep' },
+    incrementAnimatedStepCount: { type: 'IncrementAnimatedStepCount' },
 
     executeCode: (code) => ({ type: 'ExecuteCode', code }),
     updateCode: (code) => ({ type: 'UpdateCode', code }),

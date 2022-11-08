@@ -1,4 +1,4 @@
-import { useReducer } from 'react';
+import { useCallback, useEffect, useReducer } from 'react';
 import './App.css';
 import AppHeader from './components/AppHeader';
 import Editor from './components/Editor';
@@ -19,17 +19,15 @@ const previousEnabled = (state) => {
   return !state.animationInProgress && state.sprint && state.sprint.pc !== 1;
 }
 
-
+let counter = 0;
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const modalOpen = state.showError || state.showHelp || state.showSaveCodeModal;
 
   if (state.animationInProgress && nextStepAvailable(state)) {
-    setTimeout(
-      () => dispatch(Actions.nextAnimationStep),
-      state.animationDelay * (state.animationStepNumber + 1)
-    );
+    console.log(`${counter++}`)
+    setTimeout(() => dispatch(Actions.nextAnimationStep), state.animationDelay)
   }
 
   return (
