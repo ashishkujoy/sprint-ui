@@ -32,3 +32,11 @@ export const saveProgram = (programName, code) => {
     existingCode[programName] = code;
     localStorage.setItem('sprintPrograms', JSON.stringify(existingCode));
 }
+
+export const toGroupOf = (elements, groupSize) => {
+    const groups = [];
+    for (let i = 0; i < elements.length; i += groupSize) {
+        groups.push(elements.slice(i, i + groupSize));
+    }
+    return groups;
+}

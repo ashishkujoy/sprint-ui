@@ -19,7 +19,6 @@ export const FileNameSelector = ({ enabled, fileNames, closeModal, className, on
             <label htmlFor='programName'>Choose File</label>
             <select
                 name='programName'
-                onChange={(e) => console.log()}
                 ref={ref}
             >
                 {fileNames.map(fileName => <option value={fileName} key={fileName}>{fileName}</option>)}

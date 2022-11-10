@@ -1,10 +1,4 @@
-const toGroupOf = (elements, groupSize) => {
-    const groups = [];
-    for (let i = 0; i < elements.length; i += groupSize) {
-        groups.push(elements.slice(i, i + groupSize));
-    }
-    return groups;
-}
+import { toGroupOf } from "../utils";
 
 const getRegisterClassName = (register) => {
     if (register.isHaltInstruction) {
@@ -51,20 +45,24 @@ const ResetOrRunButton = ({ runEnabled, resetEnabled, onRunClick, onResetClick }
             onClick={runEnabled ? onRunClick : () => { }}>
             Run
         </button>
-    }           
+    }
+}
+
+const RegistersGrid = (props) => {
+    const groupedRegisters = toGroupOf(props.registers, 16);
+
+    return <div className='register-container light-border'>
+        <table>
+            <tbody>
+                {groupedRegisters.map((registers, i) => <RegisterRow registers={registers} key={i} />)}
+            </tbody>
+        </table>
+    </div>
 }
 
 const RegisterGroup = (props) => {
-    const groupedRegisters = toGroupOf(props.registers, 16);
-
     return (<div>
-        <div className='register-container light-border'>
-            <table>
-                <tbody>
-                    {groupedRegisters.map((registers, i) => <RegisterRow registers={registers} key={i} />)}
-                </tbody>
-            </table>
-        </div>
+        <RegistersGrid registers={props.registers} />
         <div>
             <ResetOrRunButton
                 runEnabled={props.runEnabled}

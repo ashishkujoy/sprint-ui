@@ -56,8 +56,8 @@ function App() {
               min={0}
               onChange={(speed) => dispatch(Actions.setAnimationSpeed(speed))}
             />
-            <button onClick={() => dispatch(Actions.showSaveProgramModal)}>Save</button>
-            <button onClick={() => dispatch(Actions.showLoadProgramModal)}>Load</button>
+            <button className='btn' onClick={() => dispatch(Actions.showSaveProgramModal)}>Save</button>
+            <button className='btn' onClick={() => dispatch(Actions.showLoadProgramModal)}>Load</button>
           </div>
           <div className='editor-and-register'>
             <Editor
@@ -84,9 +84,8 @@ function App() {
         enabled={state.showError}
         error={state.error}
         onClose={() => dispatch(Actions.hideError)}
-      /> : <></>
+      />
       <Help enabled={state.showHelp} closeHelp={() => dispatch(Actions.closeHelp)} />
-
       <ProgramNamePrompt
         enabled={state.showSaveProgramModal}
         onSave={(programName) => dispatch(Actions.saveProgram(programName))}
