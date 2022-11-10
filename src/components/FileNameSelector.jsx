@@ -7,19 +7,23 @@ export const FileNameSelector = ({ enabled, fileNames, closeModal, className, on
     return <Modal
         isEnabled={enabled}
         nonCloseable={false}
-        onClose={closeModal}>
+        onClose={closeModal}
+        actionBtnOptions={{
+            isEnabled: true,
+            onClick: () => onFileSelection(ref.current.value),
+            title: 'Load'
+        }}
+        className={className}
+    >
         <div>
             <label htmlFor='programName'>Choose File</label>
             <select
                 name='programName'
-                onChange={(e) => console.log(e)}
+                onChange={(e) => console.log()}
                 ref={ref}
             >
                 {fileNames.map(fileName => <option value={fileName} key={fileName}>{fileName}</option>)}
             </select>
-        </div>
-        <div>
-            <button className='btn' onClick={() => onFileSelection(ref.current.value)}>Load</button>
         </div>
     </Modal>
 }

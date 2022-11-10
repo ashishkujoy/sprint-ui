@@ -10,17 +10,31 @@ const CloseBtn = ({ nonCloseable, onClose }) => {
     }
 }
 
+const ActionBtn = ({ showActionBtn, title, onClick }) => {
+    if (showActionBtn) {
+        return <button onClick={onClick} className='btn'>{title}</button>
+    } else {
+        return <></>
+    }
+}
+
 const Modal = (props) => {
     if (!props.isEnabled) {
         return <></>
     }
     const className = props.className ? `modal ${props.className}` : 'modal';
+    const actionBtnOptions = props.actionBtnOptions || {};
 
     return (<div className={className}>
         <CloseBtn nonCloseable={props.nonCloseable} onClose={props.onClose} />
         <div className='modal-body'>
             {props.children}
         </div>
+        <ActionBtn
+            showActionBtn={actionBtnOptions.isEnabled}
+            onClick={actionBtnOptions.onClick}
+            title={actionBtnOptions.title}
+        />
     </div>)
 }
 
