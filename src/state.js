@@ -164,7 +164,11 @@ const loadProgram = (state, { programName }) => {
     }
 }
 
-const setMaxInstructions = (state, {maxInstruction}) => ({...state, maxInstruction})
+const setMaxInstructions = (state, { maxInstruction }) => ({ ...state, maxInstruction });
+
+const movePCToOne = (state) => {
+    return executeCode(state, { code: state.code });
+}
 
 export const initialState = {
     registers: registersWithCode({}, { code: placeholderCode }).registers,
@@ -213,6 +217,7 @@ export const reducer = (state, action) => {
         case 'LoadProgram': return loadProgram(state, action)
         case 'SetAnimationSpeed' : return setAnimationSpeed(state, action)
         case 'SetMaxInstructions': return setMaxInstructions(state, action)
+        case 'MovePCToOne': return movePCToOne(state, action)
         default: return state
     }
 }
@@ -232,6 +237,7 @@ export const Actions = {
     showLoadProgramModal: { type: 'ShowLoadProgramModal' },
     hideLoadProgramModal: { type: 'HideLoadProgramModal' },
     showInputModal: { type: 'ShowInputModal' },
+    movePCToOne: {type: 'MovePCToOne'},
     executeCode: (code) => ({ type: 'ExecuteCode', code }),
     updateCode: (code) => ({ type: 'UpdateCode', code }),
     saveProgram: (programName) => ({ type: 'SaveProgram', programName }),

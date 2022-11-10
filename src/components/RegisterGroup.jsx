@@ -38,6 +38,22 @@ const RegisterRow = ({ registers }) => {
     </tr>)
 }
 
+const ResetOrRunButton = ({ runEnabled, resetEnabled, onRunClick, onResetClick }) => {
+    if (resetEnabled) {
+        return <button
+            className='action-btn'
+            onClick={onResetClick}>
+            Jump to start
+        </button>
+    } else {
+        return <button
+            className={`action-btn ${runEnabled ? '' : 'disabled'}`}
+            onClick={runEnabled ? onRunClick : () => { }}>
+            Run
+        </button>
+    }           
+}
+
 const RegisterGroup = (props) => {
     const groupedRegisters = toGroupOf(props.registers, 16);
 
@@ -50,11 +66,12 @@ const RegisterGroup = (props) => {
             </table>
         </div>
         <div>
-            <button
-                className={`action-btn ${props.runEnabled ? '' : 'disabled'}`}
-                onClick={props.runEnabled ? props.onRunClick : () => { }}>
-                Run
-            </button>
+            <ResetOrRunButton
+                runEnabled={props.runEnabled}
+                onRunClick={props.onRunClick}
+                resetEnabled={props.resetEnabled}
+                onResetClick={props.onResetClick}
+            />
             <button
                 className={`action-btn ${props.previousStepEnabled ? '' : 'disabled'}`}
                 onClick={props.previousStepEnabled ? props.onPreviousStepClick : () => { }}>

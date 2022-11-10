@@ -74,6 +74,8 @@ function App() {
               nextStepEnabled={nextEnabled(state)}
               previousStepEnabled={previousEnabled(state)}
               runEnabled={nextStepAvailable(state)}
+              resetEnabled={state.sprint && state.isHalted}
+              onResetClick={() => dispatch(Actions.movePCToOne)}
             />
           </div>
         </div>
