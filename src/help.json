@@ -41,8 +41,17 @@
             "shortDescription": "JumpsIfEqual moves the program counter to the specified cell number if value in lhs cell is equal to rhs cell",
             "syntax": "4 [lhs cell number] [rhs cell number] [cell number]",
             "example": [
-                "The instruction [4 100 101 15] at line 3 moves the program counter to cell number 15, as a result program execute halt instruction of cell number 13 instead of add instruction",
+                "The instruction [4 100 101 15] at line 3 moves the program counter to cell number 15, as a result program execute halt instruction of cell number 13 instead of add instruction of line number 4",
                 "CODE-BLOCK 0 45 100\n0 45 101\n4 100 101 15\n1 100 101 102\n9"
+            ]
+        },
+        {
+            "name": "JumpIfLessThan",
+            "shortDescription": "JumpIfLessThan moves the program counter to the specified cell number if value in lhs cell is less than that of rhs cell",
+            "syntax": "5 [lhs cell number] [rhs cell number] [cell number]",
+            "example": [
+                "The instruction [5 100 101 15] at line 3 moves the program counter to cell number 15, as a result program execute halt instruction of cell number 13 instead of add instruction of line number 4",
+                "CODE-BLOCK 0 45 100\n0 55 101\n5 100 101 15\n1 100 101 102\n9"
             ]
         },
         {

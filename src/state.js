@@ -66,7 +66,14 @@ const executeCode = (state, action) => {
         sprint
     )
 
-    return { ...state, registers, sprint, isHalted: false, userInput: undefined };
+    return {
+        ...state,
+        registers,
+        sprint,
+        isHalted: false,
+        inputRequiredFromUser: isInputRequiredFromUser(registers, sprint.pc, state),
+        userInput: undefined
+    };
 }
 
 const loadSavedProgramNames = () => {
@@ -152,13 +159,13 @@ const setInput = (state, { input }) => {
 
 const showInputModal = (state) => ({ ...state, inputModalOpen: true, userInput: undefined });
 
-const setAnimationSpeed = (state, {speed}) => ({ ...state, animationDelay : speed})
+const setAnimationSpeed = (state, { speed }) => ({ ...state, animationDelay: speed })
 
 const loadProgram = (state, { programName }) => {
     const code = JSON.parse(localStorage.getItem('sprintPrograms') || '{}')[programName];
-    
+
     if (code) {
-        return { ...registersWithCode(state, { code }), showLoadProgramModal: false, code}
+        return { ...registersWithCode(state, { code }), showLoadProgramModal: false, code }
     } else {
         return { ...state, showLoadProgramModal: false }
     }
@@ -215,7 +222,7 @@ export const reducer = (state, action) => {
         case 'SetInput': return setInput(state, action)
         case 'ShowInputModal': return showInputModal(state)
         case 'LoadProgram': return loadProgram(state, action)
-        case 'SetAnimationSpeed' : return setAnimationSpeed(state, action)
+        case 'SetAnimationSpeed': return setAnimationSpeed(state, action)
         case 'SetMaxInstructions': return setMaxInstructions(state, action)
         case 'MovePCToOne': return movePCToOne(state, action)
         default: return state
@@ -237,7 +244,7 @@ export const Actions = {
     showLoadProgramModal: { type: 'ShowLoadProgramModal' },
     hideLoadProgramModal: { type: 'HideLoadProgramModal' },
     showInputModal: { type: 'ShowInputModal' },
-    movePCToOne: {type: 'MovePCToOne'},
+    movePCToOne: { type: 'MovePCToOne' },
     executeCode: (code) => ({ type: 'ExecuteCode', code }),
     updateCode: (code) => ({ type: 'UpdateCode', code }),
     saveProgram: (programName) => ({ type: 'SaveProgram', programName }),
@@ -245,5 +252,5 @@ export const Actions = {
     loadProgram: (programName) => ({ type: 'LoadProgram', programName }),
     setAnimationSpeed: (speed) => ({ type: 'SetAnimationSpeed', speed }),
     setMaxInstructions: (maxInstruction) => ({ type: 'SetMaxInstructions', maxInstruction }),
-    
+
 }
