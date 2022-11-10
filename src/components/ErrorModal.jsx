@@ -1,14 +1,13 @@
+import Modal from "./Modal"
 
 const ErrorModal = ({ enabled, error, onClose }) => {
-    if (enabled) {
-        return (<div className='error-modal'>
-            <div className='error-message'>{error.message.replace('address', 'cell number')}</div>
-            <button onClick={onClose}>Close</button>
-        </div>)
-    } else {
-        return <></>
-    }
-    
+    return <Modal
+        isEnabled={enabled}
+        nonCloseable={false}
+        onClose={onClose}
+    >
+        <div className='error-message'>{(error || {}).message}</div>
+    </Modal>
 }
 
 export default ErrorModal;

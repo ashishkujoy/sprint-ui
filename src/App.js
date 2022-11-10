@@ -5,9 +5,9 @@ import Editor from './components/Editor';
 import ErrorModal from './components/ErrorModal';
 import Help from './components/Help';
 import RegisterGroup from './components/RegisterGroup';
-import ProgramNamePrompt from './components/Save';
+import ProgramNamePrompt from './components/ProgramNamePrompt';
 import { Actions, initialState, reducer } from './state';
-import FileNameSelector from './components/Load';
+import FileNameSelector from './components/FileNameSelector';
 import InputModal from './components/InputModal';
 import AnimationSpeedSelector from './components/AnimationSpeedSelector';
 

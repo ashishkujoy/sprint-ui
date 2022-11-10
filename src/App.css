@@ -210,8 +210,8 @@ table {
 
 .prompt {
   position: absolute;
-  left: 700px;
-  top: 350px;
+  left: 38%;
+  top: 38%;
   border: 2px solid black;
   width: 400px;
   height: 150px;
@@ -250,5 +250,10 @@ table {
   font-size: 20px;
   width: 100px;
   margin-left: 10px;
-    margin-right: 10px;
+  margin-right: 10px;
+}
+
+.btn {
+  font-size: 22px;
+  margin-top: 10px;
 }
