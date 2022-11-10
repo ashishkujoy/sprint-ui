@@ -25,7 +25,7 @@ const InstructionDetails = ({ name, shortDescription, syntax ,example }) => {
     return (<div className='instruction-detail'>
         <h3>{name}</h3>
         <h4>{shortDescription}</h4>
-        <h5> Syntex : { syntax }</h5>
+        <h5> Syntax : { syntax }</h5>
         {example.map((ex, i) => <ExampleBlock key={i} example={ex} />)}
     </div>)
 }
