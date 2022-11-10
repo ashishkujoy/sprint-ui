@@ -154,7 +154,7 @@ const hideLoadProgramModal = (state) => ({ ...state, showLoadProgramModal: false
 const setInput = (state, { input }) => {
     userInput = input;
     const newState = executeNextStep(state)
-    return ({ ...newState, inputRequiredFromUser: false, inputModalOpen: false })
+    return ({ ...newState, inputModalOpen: false })
 };
 
 const showInputModal = (state) => ({ ...state, inputModalOpen: true, userInput: undefined });
