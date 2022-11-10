@@ -50,7 +50,7 @@
             "shortDescription": "Read reads the user input and put that input to the specified cell number",
             "syntax": "6 [cell number]",
             "example": [
-                "The instruction [6 1] at line 2 reads the user input and put that value in register 1",
+                "The instruction [6 1] at line 2 reads the user input and put that value in cell number 1",
                 "CODE-BLOCK 0 45 100\n6 1\n9"
             ]
         },
