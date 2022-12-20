@@ -187,7 +187,7 @@ export const initialState = {
     error: undefined,
     showError: false,
     maxInstructionCountReached: false,
-    animationDelay: 500,
+    animationDelay: 300,
     animationStepNumber: 0,
     animationInProgress: false,
     showHelp: false,
@@ -200,7 +200,7 @@ export const initialState = {
     userInput: undefined,
     inputRequiredFromUser: false,
     inputModalOpen: false,
-    maxInstruction: 100
+    maxInstruction: 10000
 }
 
 export const reducer = (state, action) => {
