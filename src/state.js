@@ -58,8 +58,10 @@ const markPCAndArgs = (registers, sprint) => {
     return registers;
 }
 
+const removeExtraSpaces = (code) => code.split("\n").filter(line => line.trim() !== '').join("\n");
+
 const executeCode = (state, action) => {
-    const sprint = Sprint.getInstance(state.maxInstruction, 144, action.code, { readNumber: () => userInput });
+    const sprint = Sprint.getInstance(state.maxInstruction, 144, removeExtraSpaces(action.code), { readNumber: () => userInput });
     const initialReg = newCellsWithCode(state.code);
     const registers = markPCAndArgs(
         [...initialReg],
