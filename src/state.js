@@ -20,7 +20,7 @@ const emptyCells = (maxCellCount) => new Array(maxCellCount).fill(0).map((_, i) 
 const newCellsWithCode = (code, maxCellCount) => {
     const tokens = toInts(code)
     const cells = emptyCells(maxCellCount);
-    tokens.forEach((value, index) => cells[index].value = value);
+    tokens.forEach((value, index) => cells[index] === undefined || cells[index] === null ? "" : cells[index].value = value);
 
     return cells;
 }

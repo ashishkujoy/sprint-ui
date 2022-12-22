@@ -5,23 +5,20 @@ export const InputModal = ({ enabled, onSubmit, className }) => {
     const [number, setNumber] = useState(0)
     return <Modal
         isEnabled={enabled}
-        nonCloseable={false}
+        nonCloseable={true}
         className={className}>
         <p>Enter a number</p>
-        <input type='number' value={number} onChange={(e) => setNumber(e.target.value)}></input>
-        <button onClick={() => onSubmit(parseInt(number.trim()))}>Submit</button>
+        <form onSubmit={() => alert(number)}>
+            <input
+                type='number'
+                autoFocus={true}
+                value={number}
+                onChange={(e) => setNumber(e.target.value)}
+                style={{ textAlign: 'center' }}
+            ></input>
+            <button onClick={() => onSubmit(parseInt(number))}>Submit</button>
+        </form>
     </Modal>
-    // if (enabled) {
-
-    //     return <div className={`prompt ${className ? className : ''}`}>
-    //         <p>Enter a number</p>
-    //         <input type='number' value={number} onChange={(e) => setNumber(e.target.value)}></input>
-    //         <button onClick={() => onSubmit(parseInt(number.trim()))}>Submit</button>
-    //     </div>
-    // } else {
-    //     <></>
-    // }
-
 }
 
 export default InputModal;

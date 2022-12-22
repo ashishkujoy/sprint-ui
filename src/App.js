@@ -56,6 +56,13 @@ function App() {
               min={0}
               onChange={(speed) => dispatch(Actions.setAnimationSpeed(speed))}
             />
+
+            <AnimationSpeedSelector
+              title='Max Cells'
+              value={state.maxCellCount}
+              min={225}
+              onChange={(cellCounts) => dispatch(Actions.setCellCount(cellCounts))}
+            />
             <button className='btn' onClick={() => dispatch(Actions.showSaveProgramModal)}>Save</button>
             <button className='btn' onClick={() => dispatch(Actions.showLoadProgramModal)}>Load</button>
           </div>
