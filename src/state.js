@@ -61,21 +61,30 @@ const markPCAndArgs = (registers, sprint) => {
 const removeExtraSpaces = (code) => code.split("\n").filter(line => line.trim() !== '').join("\n");
 
 const executeCode = (state, action) => {
-    const sprint = Sprint.getInstance(state.maxInstruction, state.maxCellCount, removeExtraSpaces(action.code), { readNumber: () => userInput });
-    const initialReg = newCellsWithCode(state.code, state.maxCellCount);
-    const registers = markPCAndArgs(
-        [...initialReg],
-        sprint
-    )
-
-    return {
-        ...state,
-        registers,
-        sprint,
-        isHalted: false,
-        inputRequiredFromUser: isInputRequiredFromUser(registers, sprint.pc, state),
-        userInput: undefined
-    };
+    try {
+        const sprint = Sprint.getInstance(state.maxInstruction, state.maxCellCount, removeExtraSpaces(action.code), { readNumber: () => userInput });
+        const initialReg = newCellsWithCode(state.code, state.maxCellCount);
+        const registers = markPCAndArgs(
+            [...initialReg],
+            sprint
+        )
+    
+        return {
+            ...state,
+            registers,
+            sprint,
+            isHalted: false,
+            inputRequiredFromUser: isInputRequiredFromUser(registers, sprint.pc, state),
+            userInput: undefined
+        };
+    } catch (e) {
+        return {
+            ...state,
+            error: e,
+            showError: true,
+            animationInProgress: false
+        };
+    }
 }
 
 const loadSavedProgramNames = () => {
@@ -206,7 +215,7 @@ export const initialState = {
     userInput: undefined,
     inputRequiredFromUser: false,
     inputModalOpen: false,
-    maxInstruction: 10000,
+    maxInstruction: 1000,
     maxCellCount: defaultCellCount,
 }
 

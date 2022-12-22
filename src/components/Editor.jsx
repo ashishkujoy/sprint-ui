@@ -3,11 +3,11 @@ import CodeMirror from '@uiw/react-codemirror';
 const CodeVerficationButton = ({ codeVerified, onLoadCodeClick }) => {
     if (codeVerified) {
         return (<button className='execute-btn code-verified' disabled={true}>
-            Code Verified
+            Load Code
         </button>)
     } else {
         return (<button className='execute-btn' onClick={onLoadCodeClick}>
-            Verify Code
+            Load Code
         </button>)
     }
 }
