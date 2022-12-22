@@ -20,6 +20,7 @@ export const FileNameSelector = ({ enabled, fileNames, closeModal, className, on
             <select
                 name='programName'
                 ref={ref}
+                autoFocus={true}
             >
                 {fileNames.map(fileName => <option value={fileName} key={fileName}>{fileName}</option>)}
             </select>

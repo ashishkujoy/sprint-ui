@@ -26,15 +26,17 @@ const Modal = (props) => {
     const actionBtnOptions = props.actionBtnOptions || {};
 
     return (<div className={className}>
-        <CloseBtn nonCloseable={props.nonCloseable} onClose={props.onClose} />
-        <div className='modal-body'>
-            {props.children}
-        </div>
-        <ActionBtn
-            showActionBtn={actionBtnOptions.isEnabled}
-            onClick={actionBtnOptions.onClick}
-            title={actionBtnOptions.title}
-        />
+        <form>
+            <CloseBtn nonCloseable={props.nonCloseable} onClose={props.onClose} />
+            <div className='modal-body'>
+                {props.children}
+            </div>
+            <ActionBtn
+                showActionBtn={actionBtnOptions.isEnabled}
+                onClick={actionBtnOptions.onClick}
+                title={actionBtnOptions.title}
+            />
+        </form>
     </div>)
 }
 

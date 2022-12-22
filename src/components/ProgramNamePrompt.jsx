@@ -16,7 +16,12 @@ const ProgramNamePrompt = ({ enabled, onSave, onCancel }) => {
     >
         <div>
             <p>Enter the name of program</p>
-            <input value={programName} onChange={(e) => setProgramName(e.target.value.trim())}></input>
+            <input
+                autoFocus={true}
+                value={programName}
+                onChange={(e) => setProgramName(e.target.value.trim())}
+                style={{textAlign: 'center'}}
+            ></input>
         </div>
     </Modal>
 }
