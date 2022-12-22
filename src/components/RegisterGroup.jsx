@@ -49,7 +49,7 @@ const ResetOrRunButton = ({ runEnabled, resetEnabled, onRunClick, onResetClick }
 }
 
 const RegistersGrid = (props) => {
-    const groupedRegisters = toGroupOf(props.registers, 16);
+    const groupedRegisters = toGroupOf(props.registers, 25);
 
     return <div className='register-container light-border'>
         <table>

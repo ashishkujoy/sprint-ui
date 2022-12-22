@@ -23,7 +23,7 @@ const Editor = ({ onVerifyCode, onCodeChange, codeVerified, code }) => {
             value={code}
             placeholder={code}
             height="720px"
-            width='400px'
+            width='320px'
             onChange={onCodeChange}
             autoFocus={true}
             basicSetup={{

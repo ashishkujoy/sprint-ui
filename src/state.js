@@ -15,18 +15,18 @@ const hideSaveCodeModal = (state) => ({ ...state, showSaveProgramModal: false })
 
 let userInput = -1;
 
-const emptyCells = () => new Array(144).fill(0).map((_, i) => ({ id: i + 1, value: undefined }));
+const emptyCells = (maxCellCount) => new Array(maxCellCount).fill(0).map((_, i) => ({ id: i + 1, value: undefined }));
 
-const newCellsWithCode = (code) => {
+const newCellsWithCode = (code, maxCellCount) => {
     const tokens = toInts(code)
-    const cells = emptyCells();
+    const cells = emptyCells(maxCellCount);
     tokens.forEach((value, index) => cells[index].value = value);
 
     return cells;
 }
 
 const registersWithCode = (state, { code }) => {
-    const cells = newCellsWithCode(code);
+    const cells = newCellsWithCode(code, state.maxCellCount);
 
     return { ...state, registers: cells, sprint: undefined, isHalted: false, code };
 }
@@ -61,8 +61,8 @@ const markPCAndArgs = (registers, sprint) => {
 const removeExtraSpaces = (code) => code.split("\n").filter(line => line.trim() !== '').join("\n");
 
 const executeCode = (state, action) => {
-    const sprint = Sprint.getInstance(state.maxInstruction, 144, removeExtraSpaces(action.code), { readNumber: () => userInput });
-    const initialReg = newCellsWithCode(state.code);
+    const sprint = Sprint.getInstance(state.maxInstruction, state.maxCellCount, removeExtraSpaces(action.code), { readNumber: () => userInput });
+    const initialReg = newCellsWithCode(state.code, state.maxCellCount);
     const registers = markPCAndArgs(
         [...initialReg],
         sprint
@@ -91,9 +91,9 @@ const saveProgram = (state, action) => {
     return { ...state, showSaveProgramModal: false, savedProgramNames: Object.keys(programs) };
 }
 
-const getCells = (sprint) => {
+const getCells = (sprint, maxCellCount) => {
     const { cells } = sprint;
-    const registers = emptyCells();
+    const registers = emptyCells(maxCellCount);
     cells.cells.forEach(({ value }, index) => registers[index].value = value);
     return markPCAndArgs(registers, sprint);
 }
@@ -110,7 +110,7 @@ const executeNextStep = (state) => {
             return { ...state, isHalted: true };
         }
 
-        const registers = getCells(sprint);
+        const registers = getCells(sprint, state.maxCellCount);
 
         return {
             ...state,
@@ -131,7 +131,7 @@ const executePreviousStep = (state) => {
     if (!sprint) {
         return { ...state, isHalted: false };
     }
-    const registers = getCells(sprint);
+    const registers = getCells(sprint, state.maxCellCount);
 
     return {
         ...state,
@@ -179,8 +179,14 @@ const movePCToOne = (state) => {
     return executeCode(state, { code: state.code });
 }
 
+const setCellCount = (state, action) => {
+    const newState = { ...state, maxCellCount: action.cellCount }
+    return registersWithCode(newState, {code: state.code})
+}
+
+const defaultCellCount = 225
 export const initialState = {
-    registers: registersWithCode({}, { code: placeholderCode }).registers,
+    registers: registersWithCode({maxCellCount: defaultCellCount}, { code: placeholderCode }).registers,
     executionResult: [],
     stepNumber: 0,
     codeVerified: false,
@@ -200,7 +206,8 @@ export const initialState = {
     userInput: undefined,
     inputRequiredFromUser: false,
     inputModalOpen: false,
-    maxInstruction: 10000
+    maxInstruction: 10000,
+    maxCellCount: defaultCellCount,
 }
 
 export const reducer = (state, action) => {
@@ -227,6 +234,7 @@ export const reducer = (state, action) => {
         case 'SetAnimationSpeed': return setAnimationSpeed(state, action)
         case 'SetMaxInstructions': return setMaxInstructions(state, action)
         case 'MovePCToOne': return movePCToOne(state, action)
+        case 'SetCellCount': return setCellCount(state, action)
         default: return state
     }
 }
@@ -254,5 +262,6 @@ export const Actions = {
     loadProgram: (programName) => ({ type: 'LoadProgram', programName }),
     setAnimationSpeed: (speed) => ({ type: 'SetAnimationSpeed', speed }),
     setMaxInstructions: (maxInstruction) => ({ type: 'SetMaxInstructions', maxInstruction }),
+    setCellCount: (cellCount) => ({type: 'SetCellCount', cellCount}),
 
 }

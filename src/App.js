@@ -47,7 +47,7 @@ function App() {
             <AnimationSpeedSelector
               title='Max Instructions'
               value={state.maxInstruction}
-              min={100}
+              min={0}
               onChange={(maxInstruction) => dispatch(Actions.setMaxInstructions(maxInstruction))}
             />
             <AnimationSpeedSelector
