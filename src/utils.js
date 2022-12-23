@@ -75,9 +75,10 @@ export const updateLablesWithCellPositions = (rawCode) => {
             tokens.filter(token => !token.includes(':')).forEach(token => acc.tokensWithOutLableDeclaration.push(token))
             return acc;
         }, { lables: {}, cellsCount: 1, tokensWithOutLableDeclaration: [] });
+    
     Object.keys(context.lables).forEach(lable => {
         const updatedTokens = context.tokensWithOutLableDeclaration
-            .map(token => token == lable ? context.lables[lable].toString() : token);
+            .map(token => token === lable ? context.lables[lable].toString() : token);
 
         context.tokensWithOutLableDeclaration = updatedTokens;
     });
