@@ -1,4 +1,4 @@
-import { toInts, updateLablesWithCellPositions } from './utils';
+import { toInts, updateLablesWithCellPositions, ignoreComment } from './utils';
 
 const Sprint = require('@ashishkuoy/sprint');
 
@@ -17,12 +17,6 @@ let userInput = -1;
 
 const emptyCells = (maxCellCount) => new Array(maxCellCount).fill(0).map((_, i) => ({ id: i + 1, value: undefined }));
 
-const ignoreComment = (line) => {
-    if (line.includes(';')) {
-        return line.substring(0, line.indexOf(';'))
-    }
-    return line;
-}
 
 const newCellsWithCode = (code, maxCellCount) => {
     const codeWithoutComments = code.split('\n').map(ignoreComment).join('\n');

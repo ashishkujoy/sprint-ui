@@ -44,10 +44,10 @@ export const toGroupOf = (elements, groupSize) => {
     return groups;
 }
 
-const ignoreComment = (line) => {
-    if (line.includes(';')) {
-        return line.substring(0, line.indexOf(';')).trim();
-    }
+export const ignoreComment = (line) => {
+    // if (line.includes(';')) {
+    //     return line.substring(0, line.indexOf(';')).trim();
+    // }
     return line.trim();
 }
 
