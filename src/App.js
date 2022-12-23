@@ -84,6 +84,8 @@ function App() {
               runEnabled={nextStepAvailable(state)}
               resetEnabled={state.sprint && state.isHalted}
               onResetClick={() => dispatch(Actions.movePCToOne)}
+              onPauseClick={() => dispatch(Actions.pauseAnimation)}
+              animationInProgress={state.animationInProgress}
             />
           </div>
         </div>

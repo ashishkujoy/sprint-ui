@@ -170,7 +170,7 @@ const executePreviousStep = (state) => {
 const showNextAnimationStep = (state) => {
     const newState = executeNextStep(state);
 
-    return { ...newState, animationInProgress: !newState.isHalted }
+    return { ...newState, animationInProgress: !newState.isHalted && state.animationInProgress}
 }
 
 const showLoadProgramModal = (state) => ({ ...state, showLoadProgramModal: true });
@@ -211,6 +211,8 @@ const setCellCount = (state, action) => {
     const newState = { ...state, maxCellCount: action.cellCount }
     return registersWithCode(newState, { code: state.code })
 }
+
+const pauseAnimation = (state) => ({ ...state, animationInProgress: false });
 
 const defaultCellCount = 225
 export const initialState = {
@@ -267,6 +269,7 @@ export const reducer = (state, action) => {
         case 'MovePCToOne': return movePCToOne(state, action)
         case 'SetCellCount': return setCellCount(state, action)
         case 'ShowDeleteProgramModal': return showDeleteProgramModal(state, action)
+        case 'PauseAnimation': return pauseAnimation(state, action)
         default: return state
     }
 }
@@ -289,6 +292,7 @@ export const Actions = {
     showInputModal: { type: 'ShowInputModal' },
     movePCToOne: { type: 'MovePCToOne' },
     showDeleteProgramModal: { type: 'ShowDeleteProgramModal' },
+    pauseAnimation: { type: 'PauseAnimation' },
     executeCode: (code) => ({ type: 'ExecuteCode', code }),
     updateCode: (code) => ({ type: 'UpdateCode', code }),
     saveProgram: (programName) => ({ type: 'SaveProgram', programName }),

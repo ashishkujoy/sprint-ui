@@ -32,7 +32,7 @@ const RegisterRow = ({ registers }) => {
     </tr>)
 }
 
-const ResetOrRunButton = ({ runEnabled, resetEnabled, onRunClick, onResetClick }) => {
+const ResetOrRunButton = ({ runEnabled, resetEnabled, onRunClick, onResetClick, onPauseClick, animationInProgress }) => {
     if (resetEnabled) {
         return <button
             className='action-btn'
@@ -40,6 +40,13 @@ const ResetOrRunButton = ({ runEnabled, resetEnabled, onRunClick, onResetClick }
             Jump to start
         </button>
     } else {
+        if (animationInProgress) {
+            return <button
+                className='action-btn'
+                onClick={onPauseClick}>
+                Pause
+            </button>
+        }
         return <button
             className={`action-btn ${runEnabled ? '' : 'disabled'}`}
             onClick={runEnabled ? onRunClick : () => { }}>
@@ -69,6 +76,8 @@ const RegisterGroup = (props) => {
                 onRunClick={props.onRunClick}
                 resetEnabled={props.resetEnabled}
                 onResetClick={props.onResetClick}
+                onPauseClick={props.onPauseClick}
+                animationInProgress={props.animationInProgress}
             />
             <button
                 className={`action-btn ${props.previousStepEnabled ? '' : 'disabled'}`}
