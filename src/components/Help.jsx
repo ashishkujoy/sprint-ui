@@ -21,10 +21,13 @@ const ExampleBlock = ({ example }) => {
     }
 }
 
-const InstructionDetails = ({ name, shortDescription, syntax ,example }) => {
+// const OptionalLongDescription
+
+const InstructionDetails = ({ name, shortDescription, syntax, example, longDescription }) => {
     return (<div className='instruction-detail'>
         <h3>{name}</h3>
         <h4>{shortDescription}</h4>
+        {longDescription ? <h5>{ longDescription }</h5> : ''}
         <h5> Syntax : { syntax }</h5>
         {example.map((ex, i) => <ExampleBlock key={i} example={ex} />)}
     </div>)

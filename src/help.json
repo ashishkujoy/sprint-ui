@@ -85,8 +85,9 @@
     "otherFeatures": [
         {
             "name": "Lable",
-            "shortDescription": "Lable allow you name a cell, which you can then later use to refer the cell instead of cell number. At time declaring lable, lable name should end with colon(:) and at place of usage, lable name without colon. The actual value of cell number get resolved at usage site when you click on load code button.",
-            "syntax": "LABLE_NAME:",
+            "shortDescription": "Lable allow you name a cell, which you can then later use to refer the cell instead of cell number.",
+            "longDescription": " At time declaring lable, lable name should end with colon(:) followed by space and at place of usage lable name without colon. The actual value of cell number get resolved at usage site when you click on load code button. Redeclaration of lable or use of undeclared lable is not allowed.",
+            "syntax": "LABLE_NAME: 12 34 34",
             "example": [
                 "In the below code at line 7 we have declared a lable SUB by writing SUB:",
                 "This gives cell number 17 a name SUB. At line number 4 we have wrote SUB, so at run time the line number 4 becomes 3 17",
