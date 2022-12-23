@@ -39,7 +39,9 @@ const Help = ({ enabled, closeHelp }) => {
             <div className='help-message'>
                 <h1>Sprint Simulator</h1>
                 <h2>Supported Instruction</h2>
-                {helpDetails.instructionDetails.map((detail, i) => <InstructionDetails {...detail} key={i} />)}
+                {helpDetails.instructionDetails.map((detail, i) => <InstructionDetails {...detail} key={`${i}-inst`} />)}
+                <h2>Other features</h2>
+                {helpDetails.otherFeatures.map((detail, i) => <InstructionDetails {...detail} key={`${i}-feature`} />)}
             </div>
         </div>
     } else {

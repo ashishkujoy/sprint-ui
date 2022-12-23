@@ -81,5 +81,19 @@
                 "CODE-BLOCK 0 45 100\n9 \n0 50 102\n0 55 101"
             ]
         }
+    ],
+    "otherFeatures": [
+        {
+            "name": "Lable",
+            "shortDescription": "Lable allow you name a cell, which you can then later use to refer the cell instead of cell number. At time declaring lable, lable name should end with colon(:) and at place of usage, lable name without colon. The actual value of cell number get resolved at usage site when you click on load code button.",
+            "syntax": "LABLE_NAME:",
+            "example": [
+                "In the below code at line 7 we have declared a lable SUB by writing SUB:",
+                "This gives cell number 17 a name SUB. At line number 4 we have wrote SUB, so at run time the line number 4 becomes 3 17",
+                "Similary HALT lable has been declared in line 6 to name cell 16 and is used at line 8",
+                "RES lable declared at line 9 to name cell 23.",
+                "CODE-BLOCK 0 45 100\n0 55 101\n0 23 103\n3 SUB\n1 100 101 102\nHALT: 9\nSUB: 2 100 101 RES\n3 HALT\nRES: "
+            ]
+        }
     ]
 }
