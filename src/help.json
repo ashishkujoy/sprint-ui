@@ -64,6 +64,15 @@
             ]
         },
         {
+            "name": "Copy",
+            "shortDescription": "Copy copies value of lhs cell to rhs",
+            "syntax": "7 [lhs cell number] [rhs cell number]",
+            "example": [
+                "The instruction [7 100 101] at line 2 copies the value of cell number 100 in cell number 101",
+                "CODE-BLOCK 0 45 100\n7 100 101\n9"
+            ]
+        },
+        {
             "name": "Halt",
             "shortDescription": "Halt instruction stop the execution of program",
             "syntax": "9",
