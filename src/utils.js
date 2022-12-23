@@ -23,8 +23,11 @@ export const toInts = (code) => {
     return code.trim()
         .split('\n')
         .flatMap(line => line.trim().split(' '))
-        .filter(code => code.trim() !== '')
-        .map(code => parseInt(code));
+        .filter(code => code.trim() !== '' && !code.includes(':'))
+        .map(code => {
+            const parsedValue = parseInt(code);
+            return isNaN(parsedValue) ? code : parsedValue;
+        });
 }
 
 export const saveProgram = (programName, code) => {
@@ -48,6 +51,13 @@ const ignoreComment = (line) => {
     return line.trim();
 }
 
+const addLableIfNotPresent = (lables, lable, position) => {
+    if (lables[lable]) {
+        throw new Error(`Lable ${lable} already declared for cell number ${lables[lable]}`);
+    }
+    lables[lable] = position;
+}
+
 export const updateLablesWithCellPositions = (rawCode) => {
     const context = rawCode.split('\n')
         .map(ignoreComment)
@@ -57,7 +67,7 @@ export const updateLablesWithCellPositions = (rawCode) => {
             tokens.forEach(token => {
                 if (token.includes(':')) {
                     const lable = token.replace(':', '').trim();
-                    acc.lables[lable] = acc.cellsCount;
+                    addLableIfNotPresent(acc.lables, lable, acc.cellsCount);
                 } else {
                     acc.cellsCount += 1;
                 }
@@ -66,8 +76,15 @@ export const updateLablesWithCellPositions = (rawCode) => {
             return acc;
         }, { lables: {}, cellsCount: 1, tokensWithOutLableDeclaration: [] });
     Object.keys(context.lables).forEach(lable => {
-        const updatedTokens = context.tokensWithOutLableDeclaration.map(token => token == lable ? context.lables[lable].toString() : token);
+        const updatedTokens = context.tokensWithOutLableDeclaration
+            .map(token => token == lable ? context.lables[lable].toString() : token);
+
         context.tokensWithOutLableDeclaration = updatedTokens;
     });
+    context.tokensWithOutLableDeclaration.forEach((token, index) => {
+        if (isNaN(parseInt(token))) {
+            throw new Error(`Use of undeclared lable ${token} at cell number ${index + 1}`);
+        }
+    })
     return context.tokensWithOutLableDeclaration.join(' ');
 }
