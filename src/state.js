@@ -17,8 +17,16 @@ let userInput = -1;
 
 const emptyCells = (maxCellCount) => new Array(maxCellCount).fill(0).map((_, i) => ({ id: i + 1, value: undefined }));
 
+const ignoreComment = (line) => {
+    if (line.includes(';')) {
+        return line.substring(0, line.indexOf(';'))
+    }
+    return line;
+}
+
 const newCellsWithCode = (code, maxCellCount) => {
-    const tokens = toInts(code)
+    const codeWithoutComments = code.split('\n').map(ignoreComment).join('\n');
+    const tokens = toInts(codeWithoutComments);
     const cells = emptyCells(maxCellCount);
     tokens.forEach((value, index) => cells[index] === undefined || cells[index] === null ? "" : cells[index].value = value);
 
