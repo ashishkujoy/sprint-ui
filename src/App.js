@@ -28,7 +28,7 @@ function App() {
     state.showSaveProgramModal || state.showLoadProgramModal || state.showDeleteProgramModal ||
     (state.inputModalOpen && state.inputRequiredFromUser);
 
-  if (state.animationInProgress && nextStepAvailable(state) && !state.error) {
+  if (state.animationInProgress && nextStepAvailable(state) && !state.error && !modalOpen) {
     setTimeout(() => {
       if (state.inputRequiredFromUser) {
         dispatch(Actions.showInputModal)

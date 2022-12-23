@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Modal from './Modal';
 
 export const InputModal = ({ enabled, onSubmit, className }) => {
-    const [number, setNumber] = useState(0)
+    const [number, setNumber] = useState()
     return <Modal
         isEnabled={enabled}
         nonCloseable={true}
