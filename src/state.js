@@ -68,7 +68,7 @@ const executeCode = (state, action) => {
             [...initialReg],
             sprint
         )
-    
+
         return {
             ...state,
             registers,
@@ -98,6 +98,15 @@ const saveProgram = (state, action) => {
     localStorage.setItem('sprintPrograms', JSON.stringify(programs));
 
     return { ...state, showSaveProgramModal: false, savedProgramNames: Object.keys(programs) };
+}
+
+const deleteProgram = (state, { programName }) => {
+    const programs = JSON.parse(localStorage.getItem('sprintPrograms') || '{}');
+    delete programs[programName];
+
+    localStorage.setItem('sprintPrograms', JSON.stringify(programs));
+
+    return { ...state, showDeleteProgramModal: false, savedProgramNames: Object.keys(programs) };
 }
 
 const getCells = (sprint, maxCellCount) => {
@@ -158,9 +167,13 @@ const showNextAnimationStep = (state) => {
     return { ...newState, animationInProgress: !newState.isHalted }
 }
 
-const showLoadProgramModal = (state) => ({ ...state, showLoadProgramModal: true })
+const showLoadProgramModal = (state) => ({ ...state, showLoadProgramModal: true });
 
-const hideLoadProgramModal = (state) => ({ ...state, showLoadProgramModal: false })
+const showDeleteProgramModal = (state) => ({ ...state, showDeleteProgramModal: true });
+
+const hideLoadProgramModal = (state) => ({ ...state, showLoadProgramModal: false });
+
+const hideDeleteProgramModal = (state) => ({ ...state, showDeleteProgramModal: false });
 
 const setInput = (state, { input }) => {
     userInput = input;
@@ -190,12 +203,12 @@ const movePCToOne = (state) => {
 
 const setCellCount = (state, action) => {
     const newState = { ...state, maxCellCount: action.cellCount }
-    return registersWithCode(newState, {code: state.code})
+    return registersWithCode(newState, { code: state.code })
 }
 
 const defaultCellCount = 225
 export const initialState = {
-    registers: registersWithCode({maxCellCount: defaultCellCount}, { code: placeholderCode }).registers,
+    registers: registersWithCode({ maxCellCount: defaultCellCount }, { code: placeholderCode }).registers,
     executionResult: [],
     stepNumber: 0,
     codeVerified: false,
@@ -217,6 +230,7 @@ export const initialState = {
     inputModalOpen: false,
     maxInstruction: 1000,
     maxCellCount: defaultCellCount,
+    showDeleteProgramModal: false
 }
 
 export const reducer = (state, action) => {
@@ -237,13 +251,16 @@ export const reducer = (state, action) => {
         case 'IncrementAnimatedStepCount': return { ...state, animationStepNumber: state.animationStepNumber + 1 }
         case 'ShowLoadProgramModal': return showLoadProgramModal(state)
         case 'HideLoadProgramModal': return hideLoadProgramModal(state)
+        case 'HideDeleteProgramModal': return hideDeleteProgramModal(state)
         case 'SetInput': return setInput(state, action)
         case 'ShowInputModal': return showInputModal(state)
         case 'LoadProgram': return loadProgram(state, action)
+        case 'DeleteProgram': return deleteProgram(state, action)
         case 'SetAnimationSpeed': return setAnimationSpeed(state, action)
         case 'SetMaxInstructions': return setMaxInstructions(state, action)
         case 'MovePCToOne': return movePCToOne(state, action)
         case 'SetCellCount': return setCellCount(state, action)
+        case 'ShowDeleteProgramModal': return showDeleteProgramModal(state, action)
         default: return state
     }
 }
@@ -262,8 +279,10 @@ export const Actions = {
     incrementAnimatedStepCount: { type: 'IncrementAnimatedStepCount' },
     showLoadProgramModal: { type: 'ShowLoadProgramModal' },
     hideLoadProgramModal: { type: 'HideLoadProgramModal' },
+    hideDeleteProgramModal: { type: 'HideDeleteProgramModal' },
     showInputModal: { type: 'ShowInputModal' },
     movePCToOne: { type: 'MovePCToOne' },
+    showDeleteProgramModal: { type: 'ShowDeleteProgramModal' },
     executeCode: (code) => ({ type: 'ExecuteCode', code }),
     updateCode: (code) => ({ type: 'UpdateCode', code }),
     saveProgram: (programName) => ({ type: 'SaveProgram', programName }),
@@ -271,6 +290,6 @@ export const Actions = {
     loadProgram: (programName) => ({ type: 'LoadProgram', programName }),
     setAnimationSpeed: (speed) => ({ type: 'SetAnimationSpeed', speed }),
     setMaxInstructions: (maxInstruction) => ({ type: 'SetMaxInstructions', maxInstruction }),
-    setCellCount: (cellCount) => ({type: 'SetCellCount', cellCount}),
-
+    setCellCount: (cellCount) => ({ type: 'SetCellCount', cellCount }),
+    deleteProgram: (programName) => ({ type: 'DeleteProgram', programName }),
 }

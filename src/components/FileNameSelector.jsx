@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import Modal from './Modal';
 
-export const FileNameSelector = ({ enabled, fileNames, closeModal, className, onFileSelection }) => {
+export const FileNameSelector = ({ enabled, fileNames, closeModal, className, onFileSelection, title }) => {
     const ref = useRef(null);
 
     return <Modal
@@ -11,7 +11,7 @@ export const FileNameSelector = ({ enabled, fileNames, closeModal, className, on
         actionBtnOptions={{
             isEnabled: true,
             onClick: () => onFileSelection(ref.current.value),
-            title: 'Load'
+            title
         }}
         className={className}
     >

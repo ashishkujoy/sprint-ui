@@ -25,7 +25,7 @@ function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const modalOpen = state.showError || state.showHelp ||
-    state.showSaveProgramModal || state.showLoadProgramModal ||
+    state.showSaveProgramModal || state.showLoadProgramModal || state.showDeleteProgramModal ||
     (state.inputModalOpen && state.inputRequiredFromUser);
 
   if (state.animationInProgress && nextStepAvailable(state) && !state.error) {
@@ -65,6 +65,7 @@ function App() {
             />
             <button className='btn' onClick={() => dispatch(Actions.showSaveProgramModal)}>Save</button>
             <button className='btn' onClick={() => dispatch(Actions.showLoadProgramModal)}>Load</button>
+            <button className='btn' onClick={() => dispatch(Actions.showDeleteProgramModal)}>Delete</button>
           </div>
           <div className='editor-and-register'>
             <Editor
@@ -104,6 +105,15 @@ function App() {
         closeModal={() => dispatch(Actions.hideLoadProgramModal)}
         onFileSelection={(programName) => dispatch(Actions.loadProgram(programName))}
         className='file-name-modal'
+        title='Load'
+      />
+      <FileNameSelector
+        enabled={state.showDeleteProgramModal}
+        fileNames={state.savedProgramNames}
+        closeModal={() => dispatch(Actions.hideDeleteProgramModal)}
+        onFileSelection={(programName) => dispatch(Actions.deleteProgram(programName))}
+        className='file-name-modal'
+        title='Delete'
       />
       <InputModal
         enabled={state.inputModalOpen && state.inputRequiredFromUser}
