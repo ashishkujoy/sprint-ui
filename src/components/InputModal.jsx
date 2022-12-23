@@ -16,7 +16,11 @@ export const InputModal = ({ enabled, onSubmit, className }) => {
                 onChange={(e) => setNumber(e.target.value)}
                 style={{ textAlign: 'center' }}
             ></input>
-            <button onClick={() => onSubmit(parseInt(number))}>Submit</button>
+            <button onClick={() => {
+                onSubmit(parseInt(number));
+                setNumber();
+
+            }}>Submit</button>
         </form>
     </Modal>
 }
