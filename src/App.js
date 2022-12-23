@@ -64,7 +64,7 @@ function App() {
               onChange={(cellCounts) => dispatch(Actions.setCellCount(cellCounts))}
             />
             <button className='btn' onClick={() => dispatch(Actions.showSaveProgramModal)}>Save</button>
-            <button className='btn' onClick={() => dispatch(Actions.showLoadProgramModal)}>Load</button>
+            <button className='btn' onClick={() => dispatch(Actions.showLoadProgramModal)}>Open</button>
             <button className='btn' onClick={() => dispatch(Actions.showDeleteProgramModal)}>Delete</button>
           </div>
           <div className='editor-and-register'>
