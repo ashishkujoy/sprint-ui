@@ -1,4 +1,4 @@
-import { toInts } from './utils';
+import { toInts, updateLablesWithCellPositions } from './utils';
 
 const Sprint = require('@ashishkuoy/sprint');
 
@@ -66,12 +66,16 @@ const markPCAndArgs = (registers, sprint) => {
     return registers;
 }
 
-const removeExtraSpaces = (code) => code.split("\n").filter(line => line.trim() !== '').join("\n");
-
 const executeCode = (state, action) => {
     try {
-        const sprint = Sprint.getInstance(state.maxInstruction, state.maxCellCount, removeExtraSpaces(action.code), { readNumber: () => userInput });
-        const initialReg = newCellsWithCode(state.code, state.maxCellCount);
+        const codeWithLablesResolved = updateLablesWithCellPositions(action.code);
+        const sprint = Sprint.getInstance(
+            state.maxInstruction,
+            state.maxCellCount,
+            codeWithLablesResolved,
+            { readNumber: () => userInput }
+        );
+        const initialReg = newCellsWithCode(codeWithLablesResolved, state.maxCellCount);
         const registers = markPCAndArgs(
             [...initialReg],
             sprint
