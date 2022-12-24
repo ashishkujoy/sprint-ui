@@ -1,5 +1,5 @@
 
-const AnimationSpeedSelector = ({ value, onChange, title, min }) => {
+const NumberSelector = ({ value, onChange, title, min }) => {
     const updateValue = ({ target: { value } }) => {
         const val = parseInt(value);
         if (val > 0) {
@@ -13,4 +13,4 @@ const AnimationSpeedSelector = ({ value, onChange, title, min }) => {
     </div>
 }
 
-export default AnimationSpeedSelector;
+export default NumberSelector;

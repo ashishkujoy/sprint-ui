@@ -3,13 +3,13 @@ import './App.css';
 import AppHeader from './components/AppHeader';
 import Editor from './components/Editor';
 import ErrorModal from './components/ErrorModal';
-import Help from './components/Help';
-import RegisterGroup from './components/RegisterGroup';
-import ProgramNamePrompt from './components/ProgramNamePrompt';
-import { Actions, initialState, reducer } from './state';
 import FileNameSelector from './components/FileNameSelector';
+import Help from './components/Help';
 import InputModal from './components/InputModal';
-import AnimationSpeedSelector from './components/AnimationSpeedSelector';
+import ProgramNamePrompt from './components/ProgramNamePrompt';
+import RegisterGroup from './components/RegisterGroup';
+import Settings from './components/Settings';
+import { Actions, initialState, reducer } from './state';
 
 const nextStepAvailable = (state) => state.sprint && !state.isHalted
 
@@ -43,30 +43,7 @@ function App() {
       <div className={modalOpen ? "main-container disabled-screen" : "main-container"}>
         <AppHeader modalOpen={modalOpen} onHelpClick={() => dispatch(Actions.showHelp)} />
         <div className={modalOpen ? 'disabled-screen' : ''}>
-          <div className='load-save'>
-            <AnimationSpeedSelector
-              title='Max Instructions'
-              value={state.maxInstruction}
-              min={0}
-              onChange={(maxInstruction) => dispatch(Actions.setMaxInstructions(maxInstruction))}
-            />
-            <AnimationSpeedSelector
-              title='Animation Delay'
-              value={state.animationDelay}
-              min={0}
-              onChange={(speed) => dispatch(Actions.setAnimationSpeed(speed))}
-            />
-
-            <AnimationSpeedSelector
-              title='Max Cells'
-              value={state.maxCellCount}
-              min={225}
-              onChange={(cellCounts) => dispatch(Actions.setCellCount(cellCounts))}
-            />
-            <button className='btn' onClick={() => dispatch(Actions.showSaveProgramModal)}>Save</button>
-            <button className='btn' onClick={() => dispatch(Actions.showLoadProgramModal)}>Open</button>
-            <button className='btn' onClick={() => dispatch(Actions.showDeleteProgramModal)}>Delete</button>
-          </div>
+          <Settings state={state} dispatch={dispatch} />
           <div className='editor-and-register'>
             <Editor
               onVerifyCode={(code) => dispatch(Actions.executeCode(code))}
