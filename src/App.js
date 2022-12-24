@@ -2,22 +2,18 @@ import { useReducer } from 'react';
 import './App.css';
 import AppHeader from './components/AppHeader';
 import Editor from './components/Editor';
-import ErrorModal from './components/ErrorModal';
-import FileNameSelector from './components/FileNameSelector';
-import Help from './components/Help';
-import InputModal from './components/InputModal';
-import ProgramNamePrompt from './components/ProgramNamePrompt';
+import ModalGroup from './components/ModalGroup';
 import RegisterGroup from './components/RegisterGroup';
 import Settings from './components/Settings';
 import { Actions, initialState, reducer } from './state';
 
-const nextStepAvailable = (state) => state.sprint && !state.isHalted
+const isNextStepAvailable = (state) => state.sprint && !state.isHalted
 
-const nextEnabled = (state) => {
+const isNextStepEnabled = (state) => {
   return !state.animationInProgress && state.sprint && !state.isHalted
 }
 
-const previousEnabled = (state) => {
+const isPreviousStepEnabled = (state) => {
   return !state.animationInProgress && state.sprint && state.sprint.pc !== 1;
 }
 
@@ -28,7 +24,7 @@ function App() {
     state.showSaveProgramModal || state.showLoadProgramModal || state.showDeleteProgramModal ||
     (state.inputModalOpen && state.inputRequiredFromUser);
 
-  if (state.animationInProgress && nextStepAvailable(state) && !state.error && !modalOpen) {
+  if (state.animationInProgress && isNextStepAvailable(state) && !state.error && !modalOpen) {
     setTimeout(() => {
       if (state.inputRequiredFromUser) {
         dispatch(Actions.showInputModal)
@@ -56,9 +52,9 @@ function App() {
               onRunClick={() => dispatch(Actions.markAnimationStarted)}
               onNextStepClick={() => state.inputRequiredFromUser ? dispatch(Actions.showInputModal) : dispatch(Actions.incrementStep)}
               onPreviousStepClick={() => dispatch(Actions.decrementStep)}
-              nextStepEnabled={nextEnabled(state)}
-              previousStepEnabled={previousEnabled(state)}
-              runEnabled={nextStepAvailable(state)}
+              nextStepEnabled={isNextStepEnabled(state)}
+              previousStepEnabled={isPreviousStepEnabled(state)}
+              runEnabled={isNextStepAvailable(state)}
               resetEnabled={state.sprint && state.isHalted}
               onResetClick={() => dispatch(Actions.movePCToOne)}
               onPauseClick={() => dispatch(Actions.pauseAnimation)}
@@ -67,37 +63,7 @@ function App() {
           </div>
         </div>
       </div>
-      <ErrorModal
-        enabled={state.showError}
-        error={state.error}
-        onClose={() => dispatch(Actions.hideError)}
-      />
-      <Help enabled={state.showHelp} closeHelp={() => dispatch(Actions.closeHelp)} />
-      <ProgramNamePrompt
-        enabled={state.showSaveProgramModal}
-        onSave={(programName) => dispatch(Actions.saveProgram(programName))}
-        onCancel={() => dispatch(Actions.hideSaveCodeModal)}
-      />
-      <FileNameSelector
-        enabled={state.showLoadProgramModal}
-        fileNames={state.savedProgramNames}
-        closeModal={() => dispatch(Actions.hideLoadProgramModal)}
-        onFileSelection={(programName) => dispatch(Actions.loadProgram(programName))}
-        className='file-name-modal'
-        title='Load'
-      />
-      <FileNameSelector
-        enabled={state.showDeleteProgramModal}
-        fileNames={state.savedProgramNames}
-        closeModal={() => dispatch(Actions.hideDeleteProgramModal)}
-        onFileSelection={(programName) => dispatch(Actions.deleteProgram(programName))}
-        className='file-name-modal'
-        title='Delete'
-      />
-      <InputModal
-        enabled={state.inputModalOpen && state.inputRequiredFromUser}
-        onSubmit={(number) => dispatch(Actions.setInput(number))}
-      />
+      <ModalGroup state={state} dispatch={dispatch} />
     </>
   );
 }
