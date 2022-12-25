@@ -1,4 +1,4 @@
-import { toInts, updateLablesWithCellPositions, ignoreComment } from './utils';
+import { toInts, updateLablesWithCellPositions, ignoreComment, getLabelsAndTokens } from './utils';
 
 const Sprint = require('@ashishkuoy/sprint');
 
@@ -29,8 +29,8 @@ const newCellsWithCode = (code, maxCellCount) => {
 
 const registersWithCode = (state, { code }) => {
     const cells = newCellsWithCode(code, state.maxCellCount);
-
-    return { ...state, registers: cells, sprint: undefined, isHalted: false, code };
+    const { labels } = getLabelsAndTokens(code, false);
+    return { ...state, registers: cells, sprint: undefined, isHalted: false, code, labels };
 }
 
 const markPCAndArgs = (registers, sprint) => {
@@ -170,7 +170,7 @@ const executePreviousStep = (state) => {
 const showNextAnimationStep = (state) => {
     const newState = executeNextStep(state);
 
-    return { ...newState, animationInProgress: !newState.isHalted && state.animationInProgress}
+    return { ...newState, animationInProgress: !newState.isHalted && state.animationInProgress }
 }
 
 const showLoadProgramModal = (state) => ({ ...state, showLoadProgramModal: true });
@@ -238,7 +238,8 @@ export const initialState = {
     inputModalOpen: false,
     maxInstruction: 1000,
     maxCellCount: defaultCellCount,
-    showDeleteProgramModal: false
+    showDeleteProgramModal: false,
+    labels: {},
 }
 
 export const reducer = (state, action) => {

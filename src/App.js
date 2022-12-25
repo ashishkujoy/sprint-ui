@@ -6,6 +6,7 @@ import ModalGroup from './components/ModalGroup';
 import RegisterGroup from './components/RegisterGroup';
 import Settings from './components/Settings';
 import { Actions, initialState, reducer } from './state';
+import LabelToCellPositionMapping from './components/LabelToCellPositionMapping';
 
 const isNextStepAvailable = (state) => state.sprint && !state.isHalted
 
@@ -40,6 +41,7 @@ function App() {
         <AppHeader modalOpen={modalOpen} onHelpClick={() => dispatch(Actions.showHelp)} />
         <div className={modalOpen ? 'disabled-screen' : ''}>
           <Settings state={state} dispatch={dispatch} />
+          <LabelToCellPositionMapping labels={state.labels} />
           <div className='editor-and-register'>
             <Editor
               onVerifyCode={(code) => dispatch(Actions.executeCode(code))}

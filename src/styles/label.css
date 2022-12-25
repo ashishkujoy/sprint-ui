@@ -1,0 +1,19 @@
+.label-to-cell-pos {
+    padding-left: 26px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    width: 1682;
+    overflow: scroll;
+}
+
+.boxed {
+    border: 2px solid black;
+    min-width: 100px;
+    text-align: center;
+
+}
+
+table {
+    margin: 0 0;
+    border-collapse: collapse;
+}

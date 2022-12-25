@@ -19,10 +19,12 @@ export const repeat = (times, callback, delay) => {
     })
 }
 
+const removeLableDeclaration = (token) => token.substr(token.indexOf(':') + 1, token.length);
+
 export const toInts = (code) => {
     return code.trim()
         .split('\n')
-        .flatMap(line => line.trim().split(' '))
+        .flatMap(line => line.trim().split(' ').map(removeLableDeclaration))
         .filter(code => code.trim() !== '' && !code.includes(':'))
         .map(code => {
             const parsedValue = parseInt(code);
@@ -51,41 +53,56 @@ export const ignoreComment = (line) => {
     return line.trim();
 }
 
-const addLableIfNotPresent = (lables, lable, position) => {
-    if (lables[lable]) {
-        throw new Error(`Lable ${lable} already declared for cell number ${lables[lable]}`);
+const addLableIfNotPresent = (labels, label, position, failOnDuplicate) => {
+    if (labels[label] && failOnDuplicate) {
+        throw new Error(`Lable ${label} already declared for cell number ${labels[label]}`);
     }
-    lables[lable] = position;
+    labels[label] = position;
 }
 
-export const updateLablesWithCellPositions = (rawCode) => {
-    const context = rawCode.split('\n')
+export const getLabelsAndTokens = (rawCode, failOnDuplicate = true) => {
+    return rawCode.split('\n')
         .map(ignoreComment)
         .filter(line => line !== '')
         .reduce((acc, line) => {
             const tokens = line.replaceAll(':', ': ').split(/\s+/).filter(token => token !== '');
             tokens.forEach(token => {
                 if (token.includes(':')) {
-                    const lable = token.replace(':', '').trim();
-                    addLableIfNotPresent(acc.lables, lable, acc.cellsCount);
+                    const label = token.replace(':', '').trim();
+                    addLableIfNotPresent(acc.labels, label, acc.cellsCount, failOnDuplicate);
                 } else {
                     acc.cellsCount += 1;
                 }
             });
             tokens.filter(token => !token.includes(':')).forEach(token => acc.tokensWithOutLableDeclaration.push(token))
             return acc;
-        }, { lables: {}, cellsCount: 1, tokensWithOutLableDeclaration: [] });
-    
-    Object.keys(context.lables).forEach(lable => {
+        }, { labels: {}, cellsCount: 1, tokensWithOutLableDeclaration: [] });
+}
+
+const updateLabelsWithCellPositions = (context) => {
+    Object.keys(context.labels).forEach(label => {
         const updatedTokens = context.tokensWithOutLableDeclaration
-            .map(token => token === lable ? context.lables[lable].toString() : token);
+            .map(token => token === label ? context.labels[label].toString() : token);
 
         context.tokensWithOutLableDeclaration = updatedTokens;
     });
+    return context;
+}
+
+const validateNoUndeclaredVariableIsUsed = (context) => {
     context.tokensWithOutLableDeclaration.forEach((token, index) => {
         if (isNaN(parseInt(token))) {
-            throw new Error(`Use of undeclared lable ${token} at cell number ${index + 1}`);
+            throw new Error(`Use of undeclared label ${token} at cell number ${index + 1}`);
         }
-    })
+    });
+    return context;
+}
+
+export const updateLablesWithCellPositions = (rawCode) => {
+    const context = getLabelsAndTokens(rawCode);
+    
+    updateLabelsWithCellPositions(context);
+    validateNoUndeclaredVariableIsUsed(context);
+    
     return context.tokensWithOutLableDeclaration.join(' ');
 }

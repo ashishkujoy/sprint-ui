@@ -1,5 +1,6 @@
 .main-container {
   border: 5px solid black;
+  height: 99vh;
 }
 
 .light-border {
@@ -36,6 +37,7 @@
   align-items: center;
   justify-content: center;
   font-weight: bold;
+  overflow: scroll;
 }
 
 .register-row {
@@ -72,7 +74,7 @@ table {
 .header {
   display: flex;
   border-bottom: 5px solid black;
-  padding: 20px;
+  padding: 10px;
   justify-content: space-between;
 }
 
@@ -244,12 +246,12 @@ table {
 
 .animation-speed {
   display: flex;
-  font-size: 29px;
+  font-size: 20px;
   padding-top: 5px;
 }
 
 .animation-speed input {
-  font-size: 20px;
+  font-size: 18px;
   width: 100px;
   margin-left: 10px;
   margin-right: 10px;
