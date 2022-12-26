@@ -19,12 +19,12 @@ export const repeat = (times, callback, delay) => {
     })
 }
 
-const removeLableDeclaration = (token) => token.substr(token.indexOf(':') + 1, token.length);
+const removelabelDeclaration = (token) => token.substr(token.indexOf(':') + 1, token.length);
 
 export const toInts = (code) => {
     return code.trim()
         .split('\n')
-        .flatMap(line => line.trim().split(' ').map(removeLableDeclaration))
+        .flatMap(line => line.trim().split(' ').map(removelabelDeclaration))
         .filter(code => code.trim() !== '' && !code.includes(':'))
         .map(code => {
             const parsedValue = parseInt(code);
@@ -53,9 +53,9 @@ export const ignoreComment = (line) => {
     return line.trim();
 }
 
-const addLableIfNotPresent = (labels, label, position, failOnDuplicate) => {
+const addlabelIfNotPresent = (labels, label, position, failOnDuplicate) => {
     if (labels[label] && failOnDuplicate) {
-        throw new Error(`Lable ${label} already declared for cell number ${labels[label]}`);
+        throw new Error(`Label "${label}" already declared for cell number ${labels[label]}.`);
     }
     labels[label] = position;
 }
@@ -69,40 +69,40 @@ export const getLabelsAndTokens = (rawCode, failOnDuplicate = true) => {
             tokens.forEach(token => {
                 if (token.includes(':')) {
                     const label = token.replace(':', '').trim();
-                    addLableIfNotPresent(acc.labels, label, acc.cellsCount, failOnDuplicate);
+                    addlabelIfNotPresent(acc.labels, label, acc.cellsCount, failOnDuplicate);
                 } else {
                     acc.cellsCount += 1;
                 }
             });
-            tokens.filter(token => !token.includes(':')).forEach(token => acc.tokensWithOutLableDeclaration.push(token))
+            tokens.filter(token => !token.includes(':')).forEach(token => acc.tokensWithOutlabelDeclaration.push(token))
             return acc;
-        }, { labels: {}, cellsCount: 1, tokensWithOutLableDeclaration: [] });
+        }, { labels: {}, cellsCount: 1, tokensWithOutlabelDeclaration: [] });
 }
 
 const updateLabelsWithCellPositions = (context) => {
     Object.keys(context.labels).forEach(label => {
-        const updatedTokens = context.tokensWithOutLableDeclaration
+        const updatedTokens = context.tokensWithOutlabelDeclaration
             .map(token => token === label ? context.labels[label].toString() : token);
 
-        context.tokensWithOutLableDeclaration = updatedTokens;
+        context.tokensWithOutlabelDeclaration = updatedTokens;
     });
     return context;
 }
 
 const validateNoUndeclaredVariableIsUsed = (context) => {
-    context.tokensWithOutLableDeclaration.forEach((token, index) => {
+    context.tokensWithOutlabelDeclaration.forEach((token, index) => {
         if (isNaN(parseInt(token))) {
-            throw new Error(`Use of undeclared label ${token} at cell number ${index + 1}`);
+            throw new Error(`Use of undeclared label "${token}" at cell number ${index + 1}`);
         }
     });
     return context;
 }
 
-export const updateLablesWithCellPositions = (rawCode) => {
+export const updatelabelsWithCellPositions = (rawCode) => {
     const context = getLabelsAndTokens(rawCode);
     
     updateLabelsWithCellPositions(context);
     validateNoUndeclaredVariableIsUsed(context);
     
-    return context.tokensWithOutLableDeclaration.join(' ');
+    return context.tokensWithOutlabelDeclaration.join(' ');
 }

@@ -1,4 +1,4 @@
-import { toInts, updateLablesWithCellPositions, ignoreComment, getLabelsAndTokens } from './utils';
+import { toInts, updatelabelsWithCellPositions, ignoreComment, getLabelsAndTokens } from './utils';
 
 const Sprint = require('@ashishkuoy/sprint');
 
@@ -62,14 +62,14 @@ const markPCAndArgs = (registers, sprint) => {
 
 const executeCode = (state, action) => {
     try {
-        const codeWithLablesResolved = updateLablesWithCellPositions(action.code);
+        const codeWithlabelsResolved = updatelabelsWithCellPositions(action.code);
         const sprint = Sprint.getInstance(
             state.maxInstruction,
             state.maxCellCount,
-            codeWithLablesResolved,
+            codeWithlabelsResolved,
             { readNumber: () => userInput }
         );
-        const initialReg = newCellsWithCode(codeWithLablesResolved, state.maxCellCount);
+        const initialReg = newCellsWithCode(codeWithlabelsResolved, state.maxCellCount);
         const registers = markPCAndArgs(
             [...initialReg],
             sprint
