@@ -12,7 +12,7 @@ const CodeVerficationButton = ({ codeVerified, onLoadCodeClick }) => {
     }
 }
 
-const Editor = ({ onVerifyCode, onCodeChange, codeVerified, code }) => {
+const Editor = ({ onVerifyCode, onCodeChange, codeVerified, code, height, width }) => {
 
     const onLoadCodeClick = () => {
         onVerifyCode(code.trim());
@@ -22,8 +22,8 @@ const Editor = ({ onVerifyCode, onCodeChange, codeVerified, code }) => {
         <CodeMirror
             value={code}
             placeholder={code}
-            height="720px"
-            width='320px'
+            height={height || "720px"}
+            width={width || '320px'}
             onChange={onCodeChange}
             autoFocus={true}
             basicSetup={{

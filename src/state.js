@@ -123,7 +123,8 @@ const getCells = (sprint, maxCellCount) => {
 }
 
 const isInputRequiredFromUser = (registers, pc, state) => {
-    return registers[pc - 1].value === readInputInstCode && state.userInput === undefined
+    // return registers[pc - 1].value === readInputInstCode && state.userInput === undefined
+    return false;
 }
 
 const executeNextStep = (state) => {

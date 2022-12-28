@@ -55,7 +55,7 @@
             ]
         },
         {
-            "name": "Read",
+            "name": "Read <Currently disabled>",
             "shortDescription": "Read reads the user input and put that input to the specified cell number",
             "syntax": "6 [cell number]",
             "example": [
