@@ -3,7 +3,7 @@ import { toInts, updatelabelsWithCellPositions, ignoreComment, getLabelsAndToken
 const Sprint = require('@ashishkuoy/sprint');
 
 const placeholderCode = '0 45 100\n0 55 101\n1 100 101 102\n9';
-const readInputInstCode = 6;
+// const readInputInstCode = 6;
 
 const hideError = (state) => ({ ...state, showError: false, animationInProgress: false, error: undefined });
 const animateExecution = (state) => ({ ...state, animationInProgress: true, animationStepNumber: 0 });
